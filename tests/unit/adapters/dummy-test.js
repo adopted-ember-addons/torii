@@ -1,25 +1,20 @@
-import { get } from '@ember/object';
-import { run } from '@ember/runloop';
 import DummyAdapter from '../../helpers/dummy-adapter';
-import QUnit from 'qunit';
-let { module, test } = QUnit;
+import { module, test } from 'qunit';
 
-var adapter;
+module('Unit | Adapter | DummyAdapter', function (hooks) {
+  hooks.beforeEach(function () {
+    this.adapter = DummyAdapter.create();
+  });
 
-module('Unit | Adapter | DummyAdapter', {
-  beforeEach() {
-    adapter = DummyAdapter.create();
-  },
-  afterEach() {
-    run(adapter, 'destroy');
-  }
-});
+  hooks.afterEach(function () {
+    this.adapter.destroy();
+  });
 
-test("open resolves with a user", function(assert){
-  run(function(){
-    adapter.open().then(function(data){
+  test('open resolves with a user', function (assert) {
+    assert.expect(2);
+    this.adapter.open().then(function (data) {
       assert.ok(true, 'resolved');
-      assert.ok(get(data,'currentUser.email'), 'dummy user has email');
+      assert.ok(data.currentUser.email, 'dummy user has email');
     });
   });
 });

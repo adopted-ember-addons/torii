@@ -1,77 +1,87 @@
 import { run } from '@ember/runloop';
-import { getConfiguration, configure } from 'torii/configuration';
-import StripeConnectProvider from 'torii/providers/stripe-connect';
+import {
+  getConfiguration,
+  configure,
+} from '@adopted-ember-addons/torii/configuration';
+import StripeConnectProvider from '@adopted-ember-addons/torii/providers/stripe-connect';
 import QUnit from 'qunit';
 
 let { module, test } = QUnit;
 let provider;
 let originalConfiguration;
 
-
 module('Unit | Provider | StripeConnectProvider', {
   beforeEach() {
     originalConfiguration = getConfiguration();
     configure({
       providers: {
-        'stripe-connect': {}
-      }
+        'stripe-connect': {},
+      },
     });
     provider = StripeConnectProvider.create();
   },
   afterEach() {
     run(provider, 'destroy');
     configure(originalConfiguration);
-  }
+  },
 });
 
-test("Provider requires an apiKey", function(assert){
-  assert.throws(function(){
+test('Provider requires an apiKey', function (assert) {
+  assert.throws(function () {
     provider.buildUrl();
   }, /Expected configuration value apiKey to be defined.*stripe-connect/);
 });
 
-test("Provider generates a URL with required config", function(assert){
+test('Provider generates a URL with required config', function (assert) {
   configure({
     providers: {
       'stripe-connect': {
-        apiKey: 'abcdef'
-      }
-    }
+        apiKey: 'abcdef',
+      },
+    },
   });
 
-  var expectedUrl = provider.get('baseUrl') + '?' + 'response_type=code' +
-          '&client_id=' + 'abcdef' +
-          '&redirect_uri=' + encodeURIComponent(provider.get('redirectUri')) +
-          '&state=' + provider.get('state') +
-          '&scope=read_write' +
-          '&always_prompt=false';
+  var expectedUrl =
+    provider.get('baseUrl') +
+    '?' +
+    'response_type=code' +
+    '&client_id=' +
+    'abcdef' +
+    '&redirect_uri=' +
+    encodeURIComponent(provider.get('redirectUri')) +
+    '&state=' +
+    provider.get('state') +
+    '&scope=read_write' +
+    '&always_prompt=false';
 
-  assert.equal(provider.buildUrl(),
-        expectedUrl,
-        'generates the correct URL');
+  assert.equal(provider.buildUrl(), expectedUrl, 'generates the correct URL');
 });
 
-test("Provider generates a URL with optional parameters", function(assert){
+test('Provider generates a URL with optional parameters', function (assert) {
   configure({
     providers: {
       'stripe-connect': {
         apiKey: 'abcdef',
         scope: 'read_only',
         stripeLanding: 'login',
-        alwaysPrompt: true
-      }
-    }
+        alwaysPrompt: true,
+      },
+    },
   });
 
-  var expectedUrl = provider.get('baseUrl') + '?' + 'response_type=code' +
-          '&client_id=' + 'abcdef' +
-          '&redirect_uri=' + encodeURIComponent(provider.get('redirectUri')) +
-          '&state=' + provider.get('state') +
-          '&scope=read_only' +
-          '&stripe_landing=login' +
-          '&always_prompt=true';
+  var expectedUrl =
+    provider.get('baseUrl') +
+    '?' +
+    'response_type=code' +
+    '&client_id=' +
+    'abcdef' +
+    '&redirect_uri=' +
+    encodeURIComponent(provider.get('redirectUri')) +
+    '&state=' +
+    provider.get('state') +
+    '&scope=read_only' +
+    '&stripe_landing=login' +
+    '&always_prompt=true';
 
-  assert.equal(provider.buildUrl(),
-        expectedUrl,
-        'generates the correct URL');
+  assert.equal(provider.buildUrl(), expectedUrl, 'generates the correct URL');
 });

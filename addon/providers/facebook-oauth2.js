@@ -1,10 +1,10 @@
-import { configurable } from 'torii/configuration';
-import Oauth2 from 'torii/providers/oauth2-code';
+import { configurable } from '@adopted-ember-addons/torii/configuration';
+import Oauth2 from '@adopted-ember-addons/torii/providers/oauth2-code';
 import { computed } from '@ember/object';
 
 export default Oauth2.extend({
-  name:    'facebook-oauth2',
-  baseUrl: computed('apiVersion', function() {
+  name: 'facebook-oauth2',
+  baseUrl: computed('apiVersion', function () {
     if (this.get('apiVersion')) {
       // Facebook API version must be of shape 'vx.x'.
       const FACEBOOK_API_VERSION_REGEX = /^v(\d)\.(\d)$/;
@@ -24,18 +24,18 @@ export default Oauth2.extend({
 
   responseParams: ['code', 'state'],
 
-  scope:        configurable('scope', 'email'),
-  apiVersion:   configurable('apiVersion', null),
+  scope: configurable('scope', 'email'),
+  apiVersion: configurable('apiVersion', null),
 
   display: 'popup',
-  redirectUri: configurable('redirectUri', function(){
+  redirectUri: configurable('redirectUri', function () {
     // A hack that allows redirectUri to be configurable
     // but default to the superclass
     return this._super();
   }),
 
   open() {
-    return this._super().then(function(authData){
+    return this._super().then(function (authData) {
       if (authData.authorizationCode && authData.authorizationCode === '200') {
         // indication that the user hit 'cancel', not 'ok'
         throw new Error('User canceled authorization');
@@ -43,5 +43,5 @@ export default Oauth2.extend({
 
       return authData;
     });
-  }
+  },
 });

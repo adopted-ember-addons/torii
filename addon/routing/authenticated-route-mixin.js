@@ -1,13 +1,13 @@
 import { resolve } from 'rsvp';
 import Mixin from '@ember/object/mixin';
-import { getConfiguration } from 'torii/configuration';
+import { getConfiguration } from '@adopted-ember-addons/torii/configuration';
 
 export default Mixin.create({
   beforeModel(transition) {
     var route = this;
     var superBefore = this._super.apply(this, arguments);
     if (superBefore && superBefore.then) {
-      return superBefore.then(function() {
+      return superBefore.then(function () {
         return route.authenticate(transition);
       });
     } else {
@@ -18,7 +18,9 @@ export default Mixin.create({
     var configuration = getConfiguration();
     var route = this,
       session = this.get(configuration.sessionServiceName),
-      isAuthenticated = this.get(configuration.sessionServiceName + '.isAuthenticated'),
+      isAuthenticated = this.get(
+        configuration.sessionServiceName + '.isAuthenticated'
+      ),
       hasAttemptedAuth = isAuthenticated !== undefined;
 
     if (!isAuthenticated) {
@@ -27,10 +29,9 @@ export default Mixin.create({
       if (hasAttemptedAuth) {
         return route.accessDenied(transition);
       } else {
-        return session.fetch()
-          .catch(function() {
-            return route.accessDenied(transition);
-          });
+        return session.fetch().catch(function () {
+          return route.accessDenied(transition);
+        });
       }
     } else {
       // no-op; cause the user is already authenticated
@@ -39,5 +40,5 @@ export default Mixin.create({
   },
   accessDenied(transition) {
     transition.send('accessDenied', transition);
-  }
+  },
 });

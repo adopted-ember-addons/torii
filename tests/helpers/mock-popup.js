@@ -1,17 +1,17 @@
 import { resolve } from 'rsvp';
-import ParseQueryString from 'torii/lib/parse-query-string';
+import ParseQueryString from '@adopted-ember-addons/torii/lib/parse-query-string';
 
-var MockPopup = function(options) {
+var MockPopup = function (options) {
   options = options || {};
 
   this.opened = false;
   this.state = options.state;
 };
 
-MockPopup.prototype.open = function(url, keys){
+MockPopup.prototype.open = function (url, keys) {
   this.opened = true;
 
-  var parser = ParseQueryString.create({url: url, keys: ['state']}),
+  var parser = ParseQueryString.create({ url: url, keys: ['state'] }),
     data = parser.parse(),
     state = data.state;
 

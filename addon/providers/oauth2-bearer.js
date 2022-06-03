@@ -1,4 +1,4 @@
-import Provider from 'torii/providers/oauth2-code';
+import Provider from '@adopted-ember-addons/torii/providers/oauth2-code';
 
 var Oauth2Bearer = Provider.extend({
   responseType: 'token',
@@ -14,32 +14,37 @@ var Oauth2Bearer = Provider.extend({
    * closed the popup window, the promise rejects.
    */
   open(options) {
-    var name        = this.get('name'),
-        url         = this.buildUrl(),
-        redirectUri = this.get('redirectUri'),
-        responseParams = this.get('responseParams');
+    var name = this.get('name'),
+      url = this.buildUrl(),
+      redirectUri = this.get('redirectUri'),
+      responseParams = this.get('responseParams');
 
-    return this.get('popup').open(url, responseParams, options).then(function(authData) {
-      var missingResponseParams = [];
+    return this.get('popup')
+      .open(url, responseParams, options)
+      .then(function (authData) {
+        var missingResponseParams = [];
 
-      responseParams.forEach(function(param) {
-        if (authData[param] === undefined) {
-          missingResponseParams.push(param);
+        responseParams.forEach(function (param) {
+          if (authData[param] === undefined) {
+            missingResponseParams.push(param);
+          }
+        });
+
+        if (missingResponseParams.length) {
+          throw new Error(
+            'The response from the provider is missing ' +
+              'these required response params: ' +
+              missingResponseParams.join(', ')
+          );
         }
+
+        return {
+          authorizationToken: authData,
+          provider: name,
+          redirectUri: redirectUri,
+        };
       });
-
-      if (missingResponseParams.length) {
-        throw new Error("The response from the provider is missing " +
-              "these required response params: " + missingResponseParams.join(', '));
-      }
-
-      return {
-        authorizationToken: authData,
-        provider: name,
-        redirectUri: redirectUri
-      };
-    });
-  }
+  },
 });
 
 export default Oauth2Bearer;

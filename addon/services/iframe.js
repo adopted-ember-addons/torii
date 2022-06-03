@@ -1,9 +1,8 @@
 import Evented from '@ember/object/evented';
 import EmberObject from '@ember/object';
-import UiServiceMixin from 'torii/mixins/ui-service-mixin';
+import UiServiceMixin from '@adopted-ember-addons/torii/mixins/ui-service-mixin';
 
 var Iframe = EmberObject.extend(Evented, UiServiceMixin, {
-
   openRemote(url) {
     this.remote = document.createElement('iframe');
     this.remote.src = url;
@@ -20,8 +19,7 @@ var Iframe = EmberObject.extend(Evented, UiServiceMixin, {
     if (document.querySelector('#torii-iframe') === null) {
       this.trigger('didClose');
     }
-  }
-
+  },
 });
 
 export default Iframe;

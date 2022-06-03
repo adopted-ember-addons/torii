@@ -1,6 +1,10 @@
-import ApplicationRouteMixin from 'torii/routing/application-route-mixin';
-import AuthenticatedRouteMixin from 'torii/routing/authenticated-route-mixin';
-import { lookup, lookupFactory, register } from 'torii/lib/container-utils';
+import ApplicationRouteMixin from '@adopted-ember-addons/torii/routing/application-route-mixin';
+import AuthenticatedRouteMixin from '@adopted-ember-addons/torii/routing/authenticated-route-mixin';
+import {
+  lookup,
+  lookupFactory,
+  register,
+} from '@adopted-ember-addons/torii/lib/container-utils';
 
 var AuthenticatedRoute = null;
 
@@ -19,8 +23,15 @@ function reopenOrRegister(applicationInstance, factoryName, mixin) {
   }
 }
 
-export default function toriiBootstrapRouting(applicationInstance, authenticatedRoutes){
-  reopenOrRegister(applicationInstance, 'route:application', ApplicationRouteMixin);
+export default function toriiBootstrapRouting(
+  applicationInstance,
+  authenticatedRoutes
+) {
+  reopenOrRegister(
+    applicationInstance,
+    'route:application',
+    ApplicationRouteMixin
+  );
   for (var i = 0; i < authenticatedRoutes.length; i++) {
     var routeName = authenticatedRoutes[i];
     var factoryName = 'route:' + routeName;

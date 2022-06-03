@@ -1,1 +1,1 @@
-export { default } from 'torii/services/torii';
+export { default } from '@adopted-ember-addons/torii/services/torii';

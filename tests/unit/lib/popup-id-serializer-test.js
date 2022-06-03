@@ -1,28 +1,29 @@
-import PopupIdSerializer from 'torii/lib/popup-id-serializer';
-import QUnit from 'qunit';
+import PopupIdSerializer from '@adopted-ember-addons/torii/lib/popup-id-serializer';
+import { module, test } from 'qunit';
 
-let { module, test } = QUnit;
+module('Unit | Lib | PopupIdSerializer', function () {
+  test('.serialize prepends a prefix before the popup id', function (assert) {
+    var popupId = 'abc12345';
 
-module('Unit | Lib | PopupIdSerializer');
+    assert.equal(
+      'torii-popup:' + popupId,
+      PopupIdSerializer.serialize(popupId)
+    );
+  });
 
-test('.serialize prepends a prefix before the popup id', function(assert){
-  var popupId = "abc12345";
+  test('.deserialize extracts the popup id from the serialized string', function (assert) {
+    var serializedPopupId = 'torii-popup:gfedc123';
 
-  assert.equal("torii-popup:" + popupId, PopupIdSerializer.serialize(popupId));
-});
+    assert.equal(PopupIdSerializer.deserialize(serializedPopupId), 'gfedc123');
+  });
 
-test('.deserialize extracts the popup id from the serialized string', function(assert){
-  var serializedPopupId = "torii-popup:gfedc123";
+  test('.deserialize returns null if not a properly serialized torii popup', function (assert) {
+    var serializedPopupId = '';
 
-  assert.equal("gfedc123", PopupIdSerializer.deserialize(serializedPopupId));
-});
+    assert.equal(PopupIdSerializer.deserialize(serializedPopupId), null);
+  });
 
-test('.deserialize returns null if not a properly serialized torii popup', function(assert){
-  var serializedPopupId = "";
-
-  assert.equal(null, PopupIdSerializer.deserialize(serializedPopupId));
-});
-
-test('.serialize returns null if passed undefined', function(assert){
-  assert.equal(null, PopupIdSerializer.deserialize(undefined));
+  test('.serialize returns null if passed undefined', function (assert) {
+    assert.equal(PopupIdSerializer.deserialize(undefined), null);
+  });
 });

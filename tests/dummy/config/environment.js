@@ -25,37 +25,40 @@ module.exports = function (environment) {
     torii: {
       providers: {
         'linked-in-oauth2': {
-          apiKey: '772yus6d70pf11'
+          apiKey: '772yus6d70pf11',
         },
         'github-oauth2': {
           apiKey: '36564132549469e48c02',
         },
         'google-oauth2': {
-          apiKey: '139338504777-321kme2daihrj8kr8g739ntne4h2bghk.apps.googleusercontent.com',
-          redirectUri: 'http://torii-example.com:4200/torii/redirect.html'
+          apiKey:
+            '139338504777-321kme2daihrj8kr8g739ntne4h2bghk.apps.googleusercontent.com',
+          redirectUri: 'http://torii-example.com:4200/torii/redirect.html',
         },
         'google-oauth2-bearer': {
-          apiKey: '139338504777-321kme2daihrj8kr8g739ntne4h2bghk.apps.googleusercontent.com',
+          apiKey:
+            '139338504777-321kme2daihrj8kr8g739ntne4h2bghk.apps.googleusercontent.com',
           scope: 'email',
-          redirectUri: 'http://torii-example.com:4200/torii/redirect.html'
+          redirectUri: 'http://torii-example.com:4200/torii/redirect.html',
         },
         'facebook-connect': {
-          appId:      '744221908941738'
+          appId: '744221908941738',
         },
         'facebook-oauth2': {
-          apiKey:      '744221908941738',
+          apiKey: '744221908941738',
         },
-        'google-oauth2-bearer-v2' : {
+        'google-oauth2-bearer-v2': {
           // put your Google client ID here
-          apiKey: '139338504777-321kme2daihrj8kr8g739ntne4h2bghk.apps.googleusercontent.com',
+          apiKey:
+            '139338504777-321kme2daihrj8kr8g739ntne4h2bghk.apps.googleusercontent.com',
           // use the same URI here as one configured in your Google developer console
           redirectUri: 'http://torii-example.com:4200/torii/redirect.html',
           // for a list of all possible scopes, see
           // https://developers.google.com/identity/protocols/googlescopes
-          scope: 'https://www.googleapis.com/auth/userinfo.email'
-        }
-      }
-    }
+          scope: 'https://www.googleapis.com/auth/userinfo.email',
+        },
+      },
+    },
   };
 
   if (environment === 'development') {
@@ -77,7 +80,7 @@ module.exports = function (environment) {
     ENV.APP.rootElement = '#ember-testing';
     ENV.torii = {
       sessionServiceName: 'session',
-      providers: {}
+      providers: {},
     };
     ENV.APP.autoboot = false;
   }
@@ -85,6 +88,5 @@ module.exports = function (environment) {
   if (environment === 'production') {
     // here you can enable a production-specific feature
   }
-
   return ENV;
 };

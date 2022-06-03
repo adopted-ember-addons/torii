@@ -1,12 +1,12 @@
 import Mixin from '@ember/object/mixin';
-import { getConfiguration } from 'torii/configuration';
+import { getConfiguration } from '@adopted-ember-addons/torii/configuration';
 
 export default Mixin.create({
   beforeModel(transition) {
     var route = this;
     var superBefore = this._super.apply(this, arguments);
     if (superBefore && superBefore.then) {
-      return superBefore.then(function() {
+      return superBefore.then(function () {
         return route.checkLogin(transition);
       });
     } else {
@@ -15,9 +15,10 @@ export default Mixin.create({
   },
   checkLogin() {
     let configuration = getConfiguration();
-    return this.get(configuration.sessionServiceName).fetch()
-      .catch(function(){
+    return this.get(configuration.sessionServiceName)
+      .fetch()
+      .catch(function () {
         // no-op, cause no session is ok
       });
-  }
+  },
 });

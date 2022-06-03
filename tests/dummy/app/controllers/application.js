@@ -1,28 +1,30 @@
 import { A } from '@ember/array';
-import { computed } from '@ember/object';
+import { action } from '@ember/object';
+import { tracked } from '@glimmer/tracking';
 import { inject as service } from '@ember/service';
 import Controller from '@ember/controller';
 import config from '../config/environment';
 
-export default Controller.extend({
-  torii: service(),
+export default class ApplicationController extends Controller {
+  @service torii;
+  @tracked error;
+  @tracked authData;
 
-  providers: computed(function() {
+  get providers() {
     return A(Object.keys(config.torii.providers));
-  }),
-
-  actions: {
-    authorize(provider) {
-      this.setProperties({
-        error: null,
-        authData: null
-      });
-
-      this.get('torii').open(provider).then(authData => {
-        this.set('authData', authData);
-      }, (e) => {
-        this.set('error', e);
-      });
-    }
   }
-});
+
+  @action authorize(provider) {
+    this.error = null;
+    this.authData = null;
+
+    this.torii.open(provider).then(
+      (authData) => {
+        this.authData = authData;
+      },
+      (e) => {
+        this.error = e;
+      }
+    );
+  }
+}

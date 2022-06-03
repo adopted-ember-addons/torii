@@ -1,20 +1,23 @@
 import { run } from '@ember/runloop';
 import EmberObject from '@ember/object';
-import { configurable, configure } from 'torii/configuration';
+import {
+  configurable,
+  configure,
+} from '@adopted-ember-addons/torii/configuration';
 import QUnit from 'qunit';
 
 let { module, test } = QUnit;
 
 var Testable = EmberObject.extend({
-      name: 'test',
-      required: configurable('apiKey'),
-      defaulted: configurable('scope', 'email'),
-      defaultedFunctionValue: 'found-via-get',
-      defaultedFunction: configurable('redirectUri', function(){
-        return this.get('defaultedFunctionValue');
-      }),
+    name: 'test',
+    required: configurable('apiKey'),
+    defaulted: configurable('scope', 'email'),
+    defaultedFunctionValue: 'found-via-get',
+    defaultedFunction: configurable('redirectUri', function () {
+      return this.get('defaultedFunctionValue');
     }),
-    testable;
+  }),
+  testable;
 
 module('Unit | Configuration', {
   beforeEach() {
@@ -22,16 +25,17 @@ module('Unit | Configuration', {
   },
   afterEach() {
     run(testable, 'destroy');
-  }
+  },
 });
 
-test("it should throw when reading a value not defaulted", function(assert){
+test('it should throw when reading a value not defaulted', function (assert) {
   configure({
     providers: {
-      test: {}
-    }
+      test: {},
+    },
   });
-  var threw = false, message;
+  var threw = false,
+    message;
   try {
     testable.get('required');
   } catch (e) {
@@ -40,44 +44,49 @@ test("it should throw when reading a value not defaulted", function(assert){
   }
 
   assert.ok(threw, 'read threw');
-  assert.ok(/Expected configuration value apiKey to be defined for provider named test/.test(message), 'did not have proper error: '+message);
+  assert.ok(
+    /Expected configuration value apiKey to be defined for provider named test/.test(
+      message
+    ),
+    'did not have proper error: ' + message
+  );
 });
 
-test("it should read values", function(assert){
+test('it should read values', function (assert) {
   configure({
     providers: {
       test: {
-        apiKey: 'item val'
-      }
-    }
+        apiKey: 'item val',
+      },
+    },
   });
   var value = testable.get('required');
   assert.equal(value, 'item val');
 });
 
-test("it should read default values", function(assert){
+test('it should read default values', function (assert) {
   configure({
     providers: {
-      test: { apiKey: 'item val' }
-    }
+      test: { apiKey: 'item val' },
+    },
   });
   var value = testable.get('defaulted');
   assert.equal(value, 'email');
 });
 
-test("it should override default values", function(assert){
+test('it should override default values', function (assert) {
   configure({
     providers: {
       test: {
-        scope: 'baz'
-      }
-    }
+        scope: 'baz',
+      },
+    },
   });
   var value = testable.get('defaulted');
   assert.equal(value, 'baz');
 });
 
-test("it read default values from a function", function(assert){
+test('it read default values from a function', function (assert) {
   var value = testable.get('defaultedFunction');
   assert.equal(value, 'found-via-get');
 });

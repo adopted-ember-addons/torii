@@ -11,8 +11,8 @@ import { Promise as EmberPromise } from 'rsvp';
 import EmberObject from '@ember/object';
 import EmberError from '@ember/error';
 
-import { CURRENT_REQUEST_KEY, WARNING_KEY } from "./mixins/ui-service-mixin";
-import configuration from 'torii/configuration';
+import { CURRENT_REQUEST_KEY, WARNING_KEY } from './mixins/ui-service-mixin';
+import configuration from '@adopted-ember-addons/torii/configuration';
 
 export class ToriiRedirectError extends EmberError {
   constructor() {
@@ -22,12 +22,12 @@ export class ToriiRedirectError extends EmberError {
 }
 
 var RedirectHandler = EmberObject.extend({
-
   run() {
     var windowObject = this.windowObject;
 
-    return new EmberPromise(function(resolve, reject){
-      var pendingRequestKey = windowObject.localStorage.getItem(CURRENT_REQUEST_KEY);
+    return new EmberPromise(function (resolve, reject) {
+      var pendingRequestKey =
+        windowObject.localStorage.getItem(CURRENT_REQUEST_KEY);
       windowObject.localStorage.removeItem(CURRENT_REQUEST_KEY);
       if (pendingRequestKey) {
         var url = windowObject.location.toString();
@@ -35,7 +35,7 @@ var RedirectHandler = EmberObject.extend({
         windowObject.localStorage.setItem(pendingRequestKey, url);
 
         var remoteServiceName = configuration.remoteServiceName || 'popup';
-        if(remoteServiceName === 'popup'){
+        if (remoteServiceName === 'popup') {
           // NOTE : If a single provider has been configured to use the 'iframe'
           // service, this next line will still be called. It will just fail silently.
           windowObject.close();
@@ -44,16 +44,15 @@ var RedirectHandler = EmberObject.extend({
         reject(new ToriiRedirectError('Not a torii popup'));
       }
     });
-  }
-
+  },
 });
 
 RedirectHandler.reopenClass({
   // untested
   handle(windowObject) {
-    var handler = RedirectHandler.create({windowObject: windowObject});
+    var handler = RedirectHandler.create({ windowObject: windowObject });
     return handler.run();
-  }
+  },
 });
 
 export default RedirectHandler;

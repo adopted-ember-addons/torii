@@ -1,75 +1,91 @@
 import { inject as service } from '@ember/service';
-import Component from '@ember/component';
+import Component from '@ember/component'; //eslint-disable-line
 import Controller from '@ember/controller';
-import { run } from '@ember/runloop';
-import startApp from '../helpers/start-app';
 import configuration from '../../config/environment';
-import lookup from '../helpers/lookup';
 import { module, test } from 'qunit';
-
-function lookupFactory(app, key) {
-  if (app.__container__.factoryFor) {
-    return app.__container__.factoryFor(key);
-  } else {
-    return app.__container__.lookupFactory(key);
-  }
-}
+import {
+  setupContext,
+  teardownContext,
+  setupApplicationContext,
+  setApplication,
+} from '@ember/test-helpers';
+import Application from 'dummy/app';
 
 let toriiConfiguration = configuration.torii;
 var originalSessionServiceName;
 
-module('Acceptance | Ember Initialization', {
-  beforeEach() {
+module('Acceptance | Ember Initialization', function (hooks) {
+  hooks.beforeEach(function () {
+    setApplication(Application.create(configuration.APP));
     originalSessionServiceName = toriiConfiguration.sessionServiceName;
     delete toriiConfiguration.sessionServiceName;
-  },
+  });
 
-  afterEach() {
+  hooks.afterEach(async function () {
     toriiConfiguration.sessionServiceName = originalSessionServiceName;
-    run(this.application, 'destroy');
-  }
-});
+    await teardownContext(this);
+  });
 
-test('session is not injected by default', function(assert){
-  this.application = startApp();
-  assert.ok(!lookup(this.application, 'service:session'));
+  test('session is not injected by default', async function (assert) {
+    await setupContext(this, {});
+    await setupApplicationContext(this);
 
-  this.application.register('controller:application', Controller.extend());
-  var controller = lookup(this.application, 'controller:application');
-  assert.ok(!controller.get('session'), 'controller has no session');
-});
+    assert.equal(this.owner.lookup('service:session'), null);
 
-test('session is injected with the name in the configuration', function(assert){
-  toriiConfiguration.sessionServiceName = 'wackySessionName';
+    class AppCon extends Controller {}
 
-  this.application = startApp();
-  assert.ok(lookup(this.application, 'service:wackySessionName'), 'service:wackySessionName is injected');
+    this.owner.register('controller:application', AppCon);
+    const controller = this.owner.lookup('controller:application');
+    assert.equal(controller.session, null, 'controller has no session');
+  });
 
-  this.application.register('controller:application', Controller.extend());
-  var controller = lookup(this.application, 'controller:application');
+  test('session is injected with the name in the configuration', async function (assert) {
+    toriiConfiguration.sessionServiceName = 'wackySessionName';
+    await setupContext(this);
+    await setupApplicationContext(this);
 
-  assert.ok(controller.get('wackySessionName'),
-     'Controller has session with accurate name');
+    assert.notEqual(this.owner.lookup('service:wackySessionName'), null);
 
-  assert.ok(!controller.get('session'),
-     'Controller does not have "session" property name');
-});
+    class AppCon extends Controller {}
 
-test('session is injectable using inject.service', function(assert){
-  toriiConfiguration.sessionServiceName = 'session';
+    this.owner.register('controller:application', AppCon);
 
-  this.application = startApp();
-  assert.ok(lookup(this.application, 'service:session'), 'service:session is injected');
+    const controller = this.owner.lookup('controller:application');
+    assert.ok(controller.wackySessionName);
+    assert.equal(controller.session, null);
+  });
 
-  this.application.register('component:testComponent', Component.extend({
-    session: service('session'),
-    torii: service('torii')
-  }));
+  test('session is injectable using inject.service', async function (assert) {
+    toriiConfiguration.sessionServiceName = 'session';
 
-  var DummyRenderer = { componentInitAttrs() {} };
+    await setupContext(this, {});
+    await setupApplicationContext(this);
 
-  var component = lookupFactory(this.application, 'component:testComponent').create({renderer: DummyRenderer});
+    class TestComponent extends Component {
+      @service session;
+      @service torii;
+    }
 
-  assert.ok(component.get('session'), 'Component has access to injected session service');
-  assert.ok(component.get('torii'), 'Component has access to injected torii service');
+    assert.notEqual(
+      this.owner.lookup('service:session'),
+      null,
+      'Session is injected into app'
+    );
+
+    this.owner.register('component:testComponent', TestComponent);
+    var DummyRenderer = { componentInitAttrs() {} };
+
+    var component = this.owner
+      .factoryFor('component:testComponent')
+      .create({ renderer: DummyRenderer });
+
+    assert.ok(
+      component.get('session'),
+      'Component has access to injected session service'
+    );
+    assert.ok(
+      component.get('torii'),
+      'Component has access to injected torii service'
+    );
+  });
 });

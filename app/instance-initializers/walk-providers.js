@@ -1,5 +1,5 @@
-import { lookup } from 'torii/lib/container-utils';
-import { getConfiguration } from 'torii/configuration';
+import { lookup } from '@adopted-ember-addons/torii/lib/container-utils';
+import { getConfiguration } from '@adopted-ember-addons/torii/configuration';
 
 export default {
   name: 'torii-walk-providers',
@@ -10,8 +10,8 @@ export default {
     // like facebook-connect a chance to load up assets.
     for (var key in configuration.providers) {
       if (configuration.providers.hasOwnProperty(key)) {
-        lookup(applicationInstance, 'torii-provider:'+key);
+        lookup(applicationInstance, 'torii-provider:' + key);
       }
     }
-  }
+  },
 };

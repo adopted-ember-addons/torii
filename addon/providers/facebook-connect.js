@@ -9,28 +9,30 @@
 
 import { run } from '@ember/runloop';
 import { Promise as EmberPromise } from 'rsvp';
-import Provider from 'torii/providers/base';
+import Provider from '@adopted-ember-addons/torii/providers/base';
 import { loadScript } from './-private/utils';
-import { configurable } from 'torii/configuration';
+import { configurable } from '@adopted-ember-addons/torii/configuration';
 
 var fbPromise;
 
-function fbLoad(settings){
-  if (fbPromise) { return fbPromise; }
+function fbLoad(settings) {
+  if (fbPromise) {
+    return fbPromise;
+  }
 
   var original = window.fbAsyncInit;
   var locale = settings.locale;
   delete settings.locale;
-  fbPromise = new EmberPromise(function(resolve){
+  fbPromise = new EmberPromise(function (resolve) {
     if (window.FB) {
       return resolve();
     }
-    window.fbAsyncInit = function(){
+    window.fbAsyncInit = function () {
       FB.init(settings);
       run(null, resolve);
     };
     loadScript('//connect.facebook.net/' + locale + '/sdk.js');
-  }).then(function(){
+  }).then(function () {
     window.fbAsyncInit = original;
     if (window.fbAsyncInit) {
       window.fbAsyncInit.hasRun = true;
@@ -41,23 +43,26 @@ function fbLoad(settings){
   return fbPromise;
 }
 
-function fbLogin(scope, returnScopes, authType){
-  return new EmberPromise(function(resolve, reject){
-    FB.login(function(response){
-      if (response.authResponse) {
-        run(null, resolve, response.authResponse);
-      } else {
-        run(null, reject, response.status);
-      }
-    }, { scope: scope, return_scopes: returnScopes, auth_type: authType });
+function fbLogin(scope, returnScopes, authType) {
+  return new EmberPromise(function (resolve, reject) {
+    FB.login(
+      function (response) {
+        if (response.authResponse) {
+          run(null, resolve, response.authResponse);
+        } else {
+          run(null, reject, response.status);
+        }
+      },
+      { scope: scope, return_scopes: returnScopes, auth_type: authType }
+    );
   });
 }
 
-function fbNormalize(response){
+function fbNormalize(response) {
   var normalized = {
     userId: response.userID,
     accessToken: response.accessToken,
-    expiresIn: response.expiresIn
+    expiresIn: response.expiresIn,
   };
   if (response.grantedScopes) {
     normalized.grantedScopes = response.grantedScopes;
@@ -66,9 +71,8 @@ function fbNormalize(response){
 }
 
 var Facebook = Provider.extend({
-
   // Facebook connect SDK settings:
-  name:  'facebook-connect',
+  name: 'facebook-connect',
   scope: configurable('scope', 'email'),
   returnScopes: configurable('returnScopes', false),
   appId: configurable('appId'),
@@ -91,7 +95,7 @@ var Facebook = Provider.extend({
     var returnScopes = this.get('returnScopes');
 
     return fbLoad(this.settings())
-      .then(function(){
+      .then(function () {
         return fbLogin(scope, returnScopes, authType);
       })
       .then(fbNormalize);
@@ -105,9 +109,9 @@ var Facebook = Provider.extend({
       version: this.get('version'),
       appId: this.get('appId'),
       channelUrl: this.get('channelUrl'),
-      locale: this.get('locale')
+      locale: this.get('locale'),
     };
-  }
+  },
 });
 
 export default Facebook;

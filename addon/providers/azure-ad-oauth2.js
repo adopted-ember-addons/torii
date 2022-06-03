@@ -1,6 +1,6 @@
 import { computed } from '@ember/object';
-import Oauth2 from 'torii/providers/oauth2-code';
-import { configurable } from 'torii/configuration';
+import Oauth2 from '@adopted-ember-addons/torii/providers/oauth2-code';
+import { configurable } from '@adopted-ember-addons/torii/configuration';
 
 /**
  * This class implements authentication against AzureAD
@@ -10,8 +10,10 @@ import { configurable } from 'torii/configuration';
 var AzureAdOauth2 = Oauth2.extend({
   name: 'azure-ad-oauth2',
 
-  baseUrl: computed(function() {
-    return 'https://login.windows.net/' + this.get('tennantId') + '/oauth2/authorize';
+  baseUrl: computed(function () {
+    return (
+      'https://login.windows.net/' + this.get('tennantId') + '/oauth2/authorize'
+    );
   }),
 
   tennantId: configurable('tennantId', 'common'),
@@ -24,18 +26,18 @@ var AzureAdOauth2 = Oauth2.extend({
   responseMode: configurable('responseMode', null),
 
   responseParams: computed(function () {
-    return [ this.get('responseType'), 'state' ];
+    return [this.get('responseType'), 'state'];
   }),
 
   apiVersion: '1.0',
 
   responseType: configurable('responseType', 'code'),
 
-  redirectUri: configurable('redirectUri', function azureRedirectUri(){
+  redirectUri: configurable('redirectUri', function azureRedirectUri() {
     // A hack that allows redirectUri to be configurable
     // but default to the superclass
     return this._super();
-  })
+  }),
 });
 
 export default AzureAdOauth2;

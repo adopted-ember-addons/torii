@@ -1,30 +1,40 @@
 import Service from '@ember/service';
 import { Promise as EmberPromise } from 'rsvp';
-import { getOwner } from 'torii/lib/container-utils';
+import { getOwner } from '@adopted-ember-addons/torii/lib/container-utils';
 
-function lookupProvider(container, providerName){
-  return container.lookup('torii-provider:'+providerName);
+function lookupProvider(container, providerName) {
+  return container.lookup('torii-provider:' + providerName);
 }
 
-function proxyToProvider(methodName, requireMethod){
-  return function(providerName, options){
+function proxyToProvider(methodName, requireMethod) {
+  return function (providerName, options) {
     var owner = getOwner(this);
     var provider = lookupProvider(owner, providerName);
     if (!provider) {
-      throw new Error("Expected a provider named '"+providerName+"' " +
-                      ", did you forget to register it?");
+      throw new Error(
+        "Expected a provider named '" +
+          providerName +
+          "' " +
+          ', did you forget to register it?'
+      );
     }
 
     if (!provider[methodName]) {
       if (requireMethod) {
-        throw new Error("Expected provider '"+providerName+"' to define " +
-                        "the '"+methodName+"' method.");
+        throw new Error(
+          "Expected provider '" +
+            providerName +
+            "' to define " +
+            "the '" +
+            methodName +
+            "' method."
+        );
       } else {
         return EmberPromise.resolve({});
       }
     }
-    return new EmberPromise(function(resolve){
-      resolve( provider[methodName](options) );
+    return new EmberPromise(function (resolve) {
+      resolve(provider[methodName](options));
     });
   };
 }
@@ -46,7 +56,6 @@ function proxyToProvider(methodName, requireMethod){
  * @class Torii
  */
 export default Service.extend({
-
   /**
    * Open an authorization against an API. A promise resolving
    * with an authentication response object is returned. These
@@ -58,7 +67,7 @@ export default Service.extend({
    * @param {Object} [options] options to pass to the provider's `open` method
    * @return {Ember.RSVP.Promise} Promise resolving to an authentication object
    */
-  open:  proxyToProvider('open', true),
+  open: proxyToProvider('open', true),
 
   /**
    * Return a promise which will resolve if the provider has
@@ -69,7 +78,7 @@ export default Service.extend({
    * @param {Object} [options] options to pass to the provider's `fetch` method
    * @return {Ember.RSVP.Promise} Promise resolving to an authentication object
    */
-  fetch:  proxyToProvider('fetch'),
+  fetch: proxyToProvider('fetch'),
 
   /**
    * Return a promise which will resolve when the provider has been
@@ -81,5 +90,5 @@ export default Service.extend({
    * @param {Object} [options] options to pass to the provider's `close` method
    * @return {Ember.RSVP.Promise} Promise resolving when the provider is closed
    */
-  close:  proxyToProvider('close')
+  close: proxyToProvider('close'),
 });

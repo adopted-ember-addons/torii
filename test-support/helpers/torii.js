@@ -1,17 +1,13 @@
-import { run } from '@ember/runloop';
 import config from '../../config/environment';
 
 const {
-  torii: { sessionServiceName }
+  torii: { sessionServiceName },
 } = config;
 
-export function stubValidSession(application, sessionData) {
-  let session = application.__container__.lookup(`service:${sessionServiceName}`);
+export function stubValidSession(container, sessionData) {
+  let session = container.lookup(`service:${sessionServiceName}`);
 
   let sm = session.get('stateMachine');
-  run(() => {
-    sm.send('startOpen');
-    sm.send('finishOpen', sessionData);
-  });
+  sm.send('startOpen');
+  sm.send('finishOpen', sessionData);
 }
-

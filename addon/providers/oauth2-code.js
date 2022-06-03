@@ -1,15 +1,17 @@
 import { computed } from '@ember/object';
-import Provider from 'torii/providers/base';
-import { configurable } from 'torii/configuration';
-import QueryString from 'torii/lib/query-string';
-import requiredProperty from 'torii/lib/required-property';
-import randomUrlSafe from 'torii/lib/random-url-safe';
+import Provider from '@adopted-ember-addons/torii/providers/base';
+import { configurable } from '@adopted-ember-addons/torii/configuration';
+import QueryString from '@adopted-ember-addons/torii/lib/query-string';
+import requiredProperty from '@adopted-ember-addons/torii/lib/required-property';
+import randomUrlSafe from '@adopted-ember-addons/torii/lib/random-url-safe';
 
-function currentUrl(){
-  var url = [window.location.protocol,
-             "//",
-             window.location.host,
-             window.location.pathname].join('');
+function currentUrl() {
+  var url = [
+    window.location.protocol,
+    '//',
+    window.location.host,
+    window.location.pathname,
+  ].join('');
   if (url.substr(-1) !== '/') {
     url += '/';
   }
@@ -32,7 +34,7 @@ function currentUrl(){
  * @class Oauth2Provider
  */
 var Oauth2 = Provider.extend({
-  concatenatedProperties: ['requiredUrlParams','optionalUrlParams'],
+  concatenatedProperties: ['requiredUrlParams', 'optionalUrlParams'],
 
   /**
    * The parameters that must be included as query params in the 3rd-party provider's url that we build.
@@ -61,27 +63,34 @@ var Oauth2 = Provider.extend({
    *
    * @property {string} baseUrl
    */
-  baseUrl:      requiredProperty(),
+  baseUrl: requiredProperty(),
 
   /**
    * The apiKey (sometimes called app id) that identifies the registered application at the 3rd-party provider
    *
    * @property {string} apiKey
    */
-  apiKey:       configurable('apiKey'),
+  apiKey: configurable('apiKey'),
 
-  scope:        configurable('scope', null),
-  clientId:     configurable('clientId', function () { return this.get('apiKey'); }),
+  scope: configurable('scope', null),
+  clientId: configurable('clientId', function () {
+    return this.get('apiKey');
+  }),
 
-  state:        configurable('state', function () { return this.get('randomState'); }),
+  state: configurable('state', function () {
+    return this.get('randomState');
+  }),
 
   _randomState: null,
-  randomState: computed('_randomState', function() {
+  randomState: computed('_randomState', function () {
     var state = this.get('_randomState');
 
     if (!state) {
       state = randomUrlSafe(16);
-      this.set('_randomState', state); /* eslint-disable-line ember/no-side-effects */
+      this.set(
+        '_randomState',
+        state
+      ); /* eslint-disable-line ember/no-side-effects */
     }
 
     return state;
@@ -93,36 +102,36 @@ var Oauth2 = Provider.extend({
    */
   responseType: 'code',
 
- /**
-  * List of parameters that we expect
-  * to see in the query params that the 3rd-party provider appends to
-  * our `redirectUri` after the user confirms/denies authorization.
-  * If any of these parameters are missing, the OAuth attempt is considered
-  * to have failed (usually this is due to the user hitting the 'cancel' button)
-  *
-  * @property {array} responseParams
-  */
+  /**
+   * List of parameters that we expect
+   * to see in the query params that the 3rd-party provider appends to
+   * our `redirectUri` after the user confirms/denies authorization.
+   * If any of these parameters are missing, the OAuth attempt is considered
+   * to have failed (usually this is due to the user hitting the 'cancel' button)
+   *
+   * @property {array} responseParams
+   */
   responseParams: requiredProperty(),
 
-  redirectUri: configurable('redirectUri', function (){
+  redirectUri: configurable('redirectUri', function () {
     return `${currentUrl()}torii/redirect.html`;
   }),
 
   buildQueryString() {
     var requiredParams = this.get('requiredUrlParams'),
-        optionalParams = this.get('optionalUrlParams');
+      optionalParams = this.get('optionalUrlParams');
 
     var qs = QueryString.create({
       provider: this,
       requiredParams: requiredParams,
-      optionalParams: optionalParams
+      optionalParams: optionalParams,
     });
     return qs.toString();
   },
 
   buildUrl() {
     var base = this.get('baseUrl'),
-        qs   = this.buildQueryString();
+      qs = this.buildQueryString();
 
     return [base, qs].join('?');
   },
@@ -138,41 +147,52 @@ var Oauth2 = Provider.extend({
    * closed the popup window, the promise rejects.
    */
   open(options) {
-    var name        = this.get('name'),
-        url         = this.buildUrl(),
-        redirectUri = this.get('redirectUri'),
-        responseParams = this.get('responseParams'),
-        responseType = this.get('responseType'),
-        state = this.get('state'),
-        shouldCheckState = responseParams.indexOf('state') !== -1;
+    var name = this.get('name'),
+      url = this.buildUrl(),
+      redirectUri = this.get('redirectUri'),
+      responseParams = this.get('responseParams'),
+      responseType = this.get('responseType'),
+      state = this.get('state'),
+      shouldCheckState = responseParams.indexOf('state') !== -1;
 
-    return this.get('popup').open(url, responseParams, options).then(function(authData){
-      var missingResponseParams = [];
+    return this.get('popup')
+      .open(url, responseParams, options)
+      .then(function (authData) {
+        var missingResponseParams = [];
 
-      responseParams.forEach(function(param){
-        if (authData[param] === undefined) {
-          missingResponseParams.push(param);
+        responseParams.forEach(function (param) {
+          if (authData[param] === undefined) {
+            missingResponseParams.push(param);
+          }
+        });
+
+        if (missingResponseParams.length) {
+          throw new Error(
+            'The response from the provider is missing ' +
+              'these required response params: ' +
+              missingResponseParams.join(', ')
+          );
         }
+
+        if (shouldCheckState && authData.state !== state) {
+          throw new Error(
+            'The response from the provider has an incorrect ' +
+              'session state param: should be "' +
+              state +
+              '", ' +
+              'but is "' +
+              authData.state +
+              '"'
+          );
+        }
+
+        return {
+          authorizationCode: decodeURIComponent(authData[responseType]),
+          provider: name,
+          redirectUri: redirectUri,
+        };
       });
-
-      if (missingResponseParams.length){
-        throw new Error("The response from the provider is missing " +
-              "these required response params: " + missingResponseParams.join(', '));
-      }
-
-      if (shouldCheckState && authData.state !== state) {
-        throw new Error('The response from the provider has an incorrect ' +
-                        'session state param: should be "' + state + '", ' +
-                        'but is "' + authData.state + '"');
-      }
-
-      return {
-        authorizationCode: decodeURIComponent(authData[responseType]),
-        provider: name,
-        redirectUri: redirectUri
-      };
-    });
-  }
+  },
 });
 
 export default Oauth2;

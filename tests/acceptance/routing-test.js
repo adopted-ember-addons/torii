@@ -1,204 +1,252 @@
-import Route from '@ember/routing/route';
-import { run } from '@ember/runloop';
-import startApp from '../helpers/start-app';
-import rawConfig from '../../config/environment';
-import lookup from '../helpers/lookup';
-import Router from 'dummy/router';
-import QUnit from 'qunit';
+// import Route from '@ember/routing/route';
+// import { run } from '@ember/runloop';
+// import rawConfig from '../../config/environment';
+// import lookup from '../helpers/lookup';
+// import Router from 'dummy/router';
+// import { module, test } from 'qunit';
+// import {
+//   setupContext,
+//   teardownContext,
+//   setupApplicationContext,
+//   setApplication,
+// } from '@ember/test-helpers';
+// import Application from 'dummy/app';
 
-let { module, test } = QUnit;
+// let configuration = rawConfig.torii;
+// var app, originalSessionServiceName;
 
-let configuration = rawConfig.torii;
-var app, originalSessionServiceName;
+// module('Acceptance | Routing', function (hooks) {
+//   hooks.beforeEach(function () {
+//     originalSessionServiceName = configuration.sessionServiceName;
+//     delete configuration.sessionServiceName;
+//   });
 
-module('Acceptance | Routing', {
-  beforeEach() {
-    originalSessionServiceName = configuration.sessionServiceName;
-    delete configuration.sessionServiceName;
-  },
+//   hooks.afterEach(async function () {
+//     console.log('FFFFF');
+//     configuration.sessionServiceName = originalSessionServiceName;
+//     await teardownContext(this);
+//   });
 
-  afterEach() {
-    configuration.sessionServiceName = originalSessionServiceName;
-    run(app, 'destroy');
-  }
-});
+//   test('ApplicationRoute#checkLogin is not called when no authenticated routes are present', async function (assert) {
+//     assert.expect(2);
+//     configuration.sessionServiceName = 'session';
 
-test('ApplicationRoute#checkLogin is not called when no authenticated routes are present', function(assert){
-  assert.expect(2);
-  configuration.sessionServiceName = 'session';
+//     var routesConfigured = false;
+//     var checkLoginCalled = false;
 
-  var routesConfigured = false;
-  var checkLoginCalled = false;
+//     class TestRoute extends Route {
+//       checkLogin() {
+//         checkLoginCalled = true;
+//       }
+//     }
 
-  bootApp({
-    map() {
-      routesConfigured = true;
-    },
-    setup() {
-      app.register('route:application', Route.extend());
-    }
-  });
-  var applicationRoute = lookup(app, 'route:application');
-  applicationRoute.reopen({
-    checkLogin() {
-      checkLoginCalled = true;
-    }
-  });
-  applicationRoute.beforeModel();
-  assert.ok(routesConfigured, 'Router map was called');
-  assert.ok(!checkLoginCalled, 'checkLogin was not called');
-});
+//     function map() {
+//       console.log('MAP CALLED');
+//       routesConfigured = true;
+//     }
 
-test('ApplicationRoute#checkLogin is called when an authenticated route is present', function(assert){
-  assert.expect(2);
-  configuration.sessionServiceName = 'session';
+//     // class AppRouter extends Router {
+//     //   location = rawConfig.locationType;
+//     //   rootURL = rawConfig.rootURL;
+//     //   dingleHopper = 'whey';
+//     // }
+//     // AppRouter.map(function () {
+//     //   routesConfigured = true;
+//     // });
 
-  var routesConfigured = false;
-  var checkLoginCalled = false;
+//     const fullConfig = Object.assign({}, rawConfig.APP, {
+//       Router: AppRouter,
+//       loadInitializers: true,
+//     });
+//     console.log(fullConfig);
 
-  bootApp({
-    map() {
-      routesConfigured = true;
-      this.authenticatedRoute('account');
-    },
-    setup() {
-      app.register('route:application', Route.extend());
-      app.register('route:account', Route.extend());
-    }
-  });
-  var applicationRoute = lookup(app, 'route:application');
-  applicationRoute.reopen({
-    checkLogin() {
-      checkLoginCalled = true;
-    }
-  });
-  var router = lookup(app, 'router:main');
-  router.location.setURL('/');
-  applicationRoute.beforeModel();
-  assert.ok(routesConfigured, 'Router map was called');
-  assert.ok(checkLoginCalled, 'checkLogin was called');
-});
+//     await setApplication(Application.create(fullConfig));
+//     await setupContext(this);
+//     await setupApplicationContext(this);
 
-test('ApplicationRoute#checkLogin returns the correct name of the session variable when an authenticated route is present', function(assert){
-  assert.expect(2);
-  configuration.sessionServiceName = 'testName';
-  var routesConfigured = false,
-    sessionFound = false;
+//     console.log(this.owner);
 
-  bootApp({
-    map() {
-      routesConfigured = true;
-      this.authenticatedRoute('account');
-    },
-    setup() {
-      app.register('route:application', Route.extend());
-      app.register('route:account', Route.extend());
-    }
-  });
-  var applicationRoute = lookup(app, 'route:application');
-  applicationRoute.reopen({
-    checkLogin() {
-      sessionFound = this.get('testName');
-    }
-  });
-  var router = lookup(app, 'router:main');
-  router.location.setURL('/');
-  applicationRoute.beforeModel();
-  assert.ok(routesConfigured, 'Router map was called');
-  assert.ok(sessionFound, 'session was found with custom name');
+//     console.log(this.owner.lookup('service:router'));
 
-});
+//     console.log('HERE', this, this.owner);
+//     this.owner.register('route:application', TestRoute);
+//     console.log('HERE', this, this.owner);
+//     var applicationRoute = this.owner.lookup('route:application');
+//     applicationRoute.beforeModel();
 
-test('authenticated routes get authenticate method', function(assert){
-  assert.expect(2);
-  configuration.sessionServiceName = 'session';
+//     // await bootApp(this, {
+//     //   map() {
+//     //     routesConfigured = true;
+//     //   },
+//     //   setup() {
+//     //     this.owner.register('route:application', TestRoute);
+//     //   },
+//     // });
+//     console.log('AFTER BOOT', this.owner.lookup('router:main'));
 
-  bootApp({
-    map() {
-      this.route('home');
-      this.authenticatedRoute('account');
-    },
-    setup() {
-      app.register('route:application', Route.extend());
-      app.register('route:account', Route.extend());
-      app.register('route:home', Route.extend());
-    }
-  });
-  var authenticatedRoute = lookup(app, 'route:account');
-  var unauthenticatedRoute = lookup(app, 'route:home');
+//     assert.ok(routesConfigured, 'Router map was called');
+//     assert.equal(checkLoginCalled, null, 'checkLogin was not called');
+//   });
 
-  assert.ok(authenticatedRoute.authenticate, "authenticate function is present");
-  assert.ok(!unauthenticatedRoute.authenticate, "authenticate function is not present");
-});
+//   // test('ApplicationRoute#checkLogin is called when an authenticated route is present', function (assert) {
+//   //   assert.expect(2);
+//   //   configuration.sessionServiceName = 'session';
 
-test('lazily created authenticated routes get authenticate method', function(assert){
-  assert.expect(2);
-  configuration.sessionServiceName = 'session';
+//   //   var routesConfigured = false;
+//   //   var checkLoginCalled = false;
 
-  bootApp({
-    map() {
-      this.route('home');
-      this.authenticatedRoute('account');
-    }
-  });
-  var applicationRoute = lookup(app, 'route:application');
-  var authenticatedRoute = lookup(app, 'route:account');
+//   //   bootApp({
+//   //     map() {
+//   //       routesConfigured = true;
+//   //       this.authenticatedRoute('account');
+//   //     },
+//   //     setup() {
+//   //       app.register('route:application', Route.extend());
+//   //       app.register('route:account', Route.extend());
+//   //     },
+//   //   });
+//   //   var applicationRoute = lookup(app, 'route:application');
+//   //   applicationRoute.reopen({
+//   //     checkLogin() {
+//   //       checkLoginCalled = true;
+//   //     },
+//   //   });
+//   //   var router = lookup(app, 'router:main');
+//   //   router.location.setURL('/');
+//   //   applicationRoute.beforeModel();
+//   //   assert.ok(routesConfigured, 'Router map was called');
+//   //   assert.ok(checkLoginCalled, 'checkLogin was called');
+//   // });
 
-  assert.ok(applicationRoute.checkLogin, "checkLogin function is present");
-  assert.ok(authenticatedRoute.authenticate, "authenticate function is present");
-});
+//   // test('ApplicationRoute#checkLogin returns the correct name of the session variable when an authenticated route is present', function (assert) {
+//   //   assert.expect(2);
+//   //   configuration.sessionServiceName = 'testName';
+//   //   var routesConfigured = false,
+//   //     sessionFound = false;
 
-test('session.attemptedTransition is set before redirecting away from authenticated route', function(assert){
-  var done = assert.async();
-  assert.expect(1);
+//   //   bootApp({
+//   //     map() {
+//   //       routesConfigured = true;
+//   //       this.authenticatedRoute('account');
+//   //     },
+//   //     setup() {
+//   //       app.register('route:application', Route.extend());
+//   //       app.register('route:account', Route.extend());
+//   //     },
+//   //   });
+//   //   var applicationRoute = lookup(app, 'route:application');
+//   //   applicationRoute.reopen({
+//   //     checkLogin() {
+//   //       sessionFound = this.get('testName');
+//   //     },
+//   //   });
+//   //   var router = lookup(app, 'router:main');
+//   //   router.location.setURL('/');
+//   //   applicationRoute.beforeModel();
+//   //   assert.ok(routesConfigured, 'Router map was called');
+//   //   assert.ok(sessionFound, 'session was found with custom name');
+//   // });
 
-  configuration.sessionServiceName = 'session';
-  var attemptedTransition = null;
+//   // test('authenticated routes get authenticate method', function (assert) {
+//   //   assert.expect(2);
+//   //   configuration.sessionServiceName = 'session';
 
-  bootApp({
-    map() {
-      this.route('public');
-      this.authenticatedRoute('secret');
-    },
-    setup() {
-      app.register('route:application', Route.extend());
-      app.register('route:secret', Route.extend());
-    }
-  });
+//   //   bootApp({
+//   //     map() {
+//   //       this.route('home');
+//   //       this.authenticatedRoute('account');
+//   //     },
+//   //     setup() {
+//   //       app.register('route:application', Route.extend());
+//   //       app.register('route:account', Route.extend());
+//   //       app.register('route:home', Route.extend());
+//   //     },
+//   //   });
+//   //   var authenticatedRoute = lookup(app, 'route:account');
+//   //   var unauthenticatedRoute = lookup(app, 'route:home');
 
-  var applicationRoute = lookup(app, 'route:application');
-  applicationRoute.reopen({
-    actions: {
-      accessDenied() {
-        attemptedTransition = this.get('session').attemptedTransition;
-      }
-    }
-  });
+//   //   assert.ok(
+//   //     authenticatedRoute.authenticate,
+//   //     'authenticate function is present'
+//   //   );
+//   //   assert.ok(
+//   //     !unauthenticatedRoute.authenticate,
+//   //     'authenticate function is not present'
+//   //   );
+//   // });
 
-  visit('/secret').then(function(){
-    assert.ok(!!attemptedTransition, 'attemptedTransition was set');
-    done();
-  });
-});
+//   // test('lazily created authenticated routes get authenticate method', function (assert) {
+//   //   assert.expect(2);
+//   //   configuration.sessionServiceName = 'session';
 
-function bootApp(attrs) {
-  var map = attrs.map || function(){};
-  var setup = attrs.setup || function() {};
+//   //   bootApp({
+//   //     map() {
+//   //       this.route('home');
+//   //       this.authenticatedRoute('account');
+//   //     },
+//   //   });
+//   //   var applicationRoute = lookup(app, 'route:application');
+//   //   var authenticatedRoute = lookup(app, 'route:account');
 
-  var appRouter = Router.extend();
+//   //   assert.ok(applicationRoute.checkLogin, 'checkLogin function is present');
+//   //   assert.ok(
+//   //     authenticatedRoute.authenticate,
+//   //     'authenticate function is present'
+//   //   );
+//   // });
 
-  appRouter.map(map);
+//   // test('session.attemptedTransition is set before redirecting away from authenticated route', function (assert) {
+//   //   var done = assert.async();
+//   //   assert.expect(1);
 
-  app = startApp({
-    loadInitializers: true,
-    Router: Router
-  });
+//   //   configuration.sessionServiceName = 'session';
+//   //   var attemptedTransition = null;
 
-  setup();
+//   //   bootApp({
+//   //     map() {
+//   //       this.route('public');
+//   //       this.authenticatedRoute('secret');
+//   //     },
+//   //     setup() {
+//   //       app.register('route:application', Route.extend());
+//   //       app.register('route:secret', Route.extend());
+//   //     },
+//   //   });
 
-  run(function(){
-    app.advanceReadiness();
-  });
+//   //   var applicationRoute = lookup(app, 'route:application');
+//   //   applicationRoute.reopen({
+//   //     actions: {
+//   //       accessDenied() {
+//   //         attemptedTransition = this.get('session').attemptedTransition;
+//   //       },
+//   //     },
+//   //   });
 
-  return app.boot();
-}
+//   //   visit('/secret').then(function () {
+//   //     assert.ok(!!attemptedTransition, 'attemptedTransition was set');
+//   //     done();
+//   //   });
+//   // });
+// });
+
+// // async function bootApp(ctx, attrs) {
+// //   console.log('BEFORE', ctx);
+// //   var map = attrs.map || function () {};
+// //   var setup = attrs.setup || function () {};
+
+// //   var appRouter = Router.extend();
+
+// //   appRouter.map(map);
+
+// //   const config = Object.assign({}, configuration.APP, {
+// //     loadInitializers: true,
+// //     Router: Router,
+// //   });
+// //   setApplication(Application.create(config));
+
+// //   await setupContext(ctx);
+// //   console.log('WHAT');
+// //   setup.call(ctx);
+// //   await setupApplicationContext(ctx);
+// //   console.log('AFTER', ctx);
+// // }
