@@ -1,11 +1,21 @@
+'use strict';
+
 module.exports = {
   root: true,
+  parser: 'babel-eslint',
   parserOptions: {
     ecmaVersion: 2018,
-    sourceType: "module",
+    sourceType: 'module',
+    ecmaFeatures: {
+      legacyDecorators: true,
+    },
   },
-  plugins: ["ember"],
-  extends: ["eslint:recommended", "plugin:ember/recommended"],
+  plugins: ['ember'],
+  extends: [
+    'eslint:recommended',
+    'plugin:ember/recommended',
+    'plugin:prettier/recommended',
+  ],
   env: {
     browser: true,
   },
@@ -16,38 +26,30 @@ module.exports = {
     // node files
     {
       files: [
-        "index.js",
-        "testem.js",
-        "ember-cli-build.js",
-        "config/**/*.js",
-        "tests/dummy/config/**/*.js",
+        './.eslintrc.js',
+        './.prettierrc.js',
+        './.template-lintrc.js',
+        './ember-cli-build.js',
+        './index.js',
+        './testem.js',
+        './blueprints/*/index.js',
+        './config/**/*.js',
+        './tests/dummy/config/**/*.js',
       ],
-      excludedFiles: ["app/**", "addon/**", "tests/dummy/app/**"],
       parserOptions: {
-        sourceType: "script",
-        ecmaVersion: 2018,
+        sourceType: 'script',
       },
       env: {
         browser: false,
         node: true,
       },
-      plugins: ["node"],
-      rules: Object.assign(
-        {},
-        require("eslint-plugin-node").configs.recommended.rules,
-        {
-          // add your custom rules and overrides for node files here
-        }
-      ),
+      plugins: ['node'],
+      extends: ['plugin:node/recommended'],
     },
-
-    // test files
     {
-      files: ["tests/**/*.js"],
-      excludedFiles: ["tests/dummy/**/*.js"],
-      env: {
-        embertest: true,
-      },
+      // Test files:
+      files: ['tests/**/*-test.{js,ts}'],
+      extends: ['plugin:qunit/recommended'],
     },
   ],
 };
