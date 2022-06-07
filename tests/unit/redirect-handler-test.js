@@ -1,9 +1,7 @@
-import { run } from '@ember/runloop';
+/* eslint-disable ember/no-mixins */
 import RedirectHandler from '@adopted-ember-addons/torii/redirect-handler';
 import { CURRENT_REQUEST_KEY } from '@adopted-ember-addons/torii/mixins/ui-service-mixin';
-import QUnit from 'qunit';
-
-let { module, test } = QUnit;
+import { module, test } from 'qunit';
 
 function buildMockWindow(windowName, url) {
   return {
@@ -22,48 +20,47 @@ function buildMockWindow(windowName, url) {
   };
 }
 
-module('Unit | RedirectHandler');
+module('Unit | RedirectHandler', function () {
+  test('exists', function (assert) {
+    assert.ok(RedirectHandler);
+  });
 
-test('exists', function (assert) {
-  assert.ok(RedirectHandler);
-});
+  test('handles a tori-popup window with a current request key in localStorage and url', function (assert) {
+    assert.expect(2);
 
-test('handles a tori-popup window with a current request key in localStorage and url', function (assert) {
-  assert.expect(2);
+    var keyForReturn = 'some-key';
+    var url = 'http://authServer?code=1234512345fw';
+    var setUrl = null;
 
-  var keyForReturn = 'some-key';
-  var url = 'http://authServer?code=1234512345fw';
+    var mockWindow = buildMockWindow('torii-popup:abc123', url);
+    mockWindow.localStorage.getItem = function (key) {
+      if (key === CURRENT_REQUEST_KEY) {
+        return keyForReturn;
+      }
+    };
+    mockWindow.localStorage.setItem = function (key, val) {
+      if (key === keyForReturn) {
+        setUrl = val;
+      }
+    };
+    var handler = RedirectHandler.create({ windowObject: mockWindow });
 
-  var mockWindow = buildMockWindow('torii-popup:abc123', url);
-  mockWindow.localStorage.getItem = function (key) {
-    if (key === CURRENT_REQUEST_KEY) {
-      return keyForReturn;
-    }
-  };
-  mockWindow.localStorage.setItem = function (key, val) {
-    if (key === keyForReturn) {
-      assert.equal(val, url, 'url is set for parent window');
-    }
-  };
-  var handler = RedirectHandler.create({ windowObject: mockWindow });
-
-  run(function () {
     handler.run().then(
       function () {},
       function () {
         assert.ok(false, 'run handler rejected a basic url');
       }
     );
+
+    assert.equal(setUrl, url, 'url is set for parent window');
+    assert.notOk(handler.isFulfilled, 'hangs the return promise forever');
   });
 
-  assert.ok(!handler.isFulfilled, 'hangs the return promise forever');
-});
+  test('rejects the promise if there is no request key', function (assert) {
+    assert.expect(1);
+    var mockWindow = buildMockWindow('', 'http://authServer?code=1234512345fw');
+    var handler = RedirectHandler.create({ windowObject: mockWindow });
 
-test('rejects the promise if there is no request key', function (assert) {
-  var mockWindow = buildMockWindow('', 'http://authServer?code=1234512345fw');
-  var handler = RedirectHandler.create({ windowObject: mockWindow });
-
-  run(function () {
     handler.run().then(
       function () {
         assert.ok(false, 'run handler succeeded on a url');
@@ -73,18 +70,16 @@ test('rejects the promise if there is no request key', function (assert) {
       }
     );
   });
-});
 
-test('does not set local storage when not a torii popup', function (assert) {
-  assert.expect(1);
-  var mockWindow = buildMockWindow('', 'http://authServer?code=1234512345fw');
-  mockWindow.localStorage.setItem = function (/* key, value */) {
-    assert.ok(false, 'storage was set unexpectedly');
-  };
+  test('does not set local storage when not a torii popup', function (assert) {
+    assert.expect(1);
+    var mockWindow = buildMockWindow('', 'http://authServer?code=1234512345fw');
+    mockWindow.localStorage.setItem = function (/* key, value */) {
+      assert.ok(false, 'storage was set unexpectedly');
+    };
 
-  var handler = RedirectHandler.create({ windowObject: mockWindow });
+    var handler = RedirectHandler.create({ windowObject: mockWindow });
 
-  run(function () {
     handler.run().then(
       function () {
         assert.ok(false, 'run handler succeeded on a popup');
@@ -94,44 +89,39 @@ test('does not set local storage when not a torii popup', function (assert) {
       }
     );
   });
-});
 
-test('closes the window when a torii popup with request', function (assert) {
-  assert.expect(1);
+  test('closes the window when a torii popup with request', function (assert) {
+    assert.expect(1);
 
-  var mockWindow = buildMockWindow(
-    'torii-popup:abc123',
-    'http://authServer?code=1234512345fw'
-  );
-  mockWindow.localStorage.getItem = function (key) {
-    if (key === CURRENT_REQUEST_KEY) {
-      return 'some-key';
-    }
-  };
+    var mockWindow = buildMockWindow(
+      'torii-popup:abc123',
+      'http://authServer?code=1234512345fw'
+    );
+    mockWindow.localStorage.getItem = function (key) {
+      if (key === CURRENT_REQUEST_KEY) {
+        return 'some-key';
+      }
+    };
 
-  var handler = RedirectHandler.create({ windowObject: mockWindow });
+    var handler = RedirectHandler.create({ windowObject: mockWindow });
 
-  mockWindow.close = function () {
-    assert.ok(true, 'Window was closed');
-  };
-
-  run(function () {
+    mockWindow.close = function () {
+      assert.ok(true, 'Window was closed');
+    };
     handler.run();
   });
-});
 
-test('does not close the window when a not torii popup', function (assert) {
-  assert.expect(1);
+  test('does not close the window when a not torii popup', function (assert) {
+    assert.expect(1);
 
-  var mockWindow = buildMockWindow('', 'http://authServer?code=1234512345fw');
+    var mockWindow = buildMockWindow('', 'http://authServer?code=1234512345fw');
 
-  var handler = RedirectHandler.create({ windowObject: mockWindow });
+    var handler = RedirectHandler.create({ windowObject: mockWindow });
 
-  mockWindow.close = function () {
-    assert.ok(false, 'Window was closed unexpectedly');
-  };
+    mockWindow.close = function () {
+      assert.ok(false, 'Window was closed unexpectedly');
+    };
 
-  run(function () {
     handler.run().then(
       function () {},
       function () {

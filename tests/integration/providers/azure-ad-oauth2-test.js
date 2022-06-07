@@ -1,26 +1,31 @@
-import { run } from '@ember/runloop';
-var torii, app;
-
 import { configure } from '@adopted-ember-addons/torii/configuration';
 import MockPopup from '../../helpers/mock-popup';
-import startApp from '../../helpers/start-app';
-import lookup from '../../helpers/lookup';
-import QUnit from 'qunit';
+import { module, test } from 'qunit';
+import configuration from '../../../config/environment';
 
-const { module, test } = QUnit;
+import {
+  setupContext,
+  teardownContext,
+  setupApplicationContext,
+  setApplication,
+} from '@ember/test-helpers';
 
-var mockPopup = new MockPopup();
+import Application from 'dummy/app';
 
-var failPopup = new MockPopup({ state: 'invalid-state' });
+module('Integration | Provider | AzureAd', function (hooks) {
+  hooks.beforeEach(async function () {
+    setApplication(Application.create(configuration.APP));
+    await setupContext(this, {});
+    await setupApplicationContext(this);
 
-module('Integration | Provider | AzureAd', {
-  beforeEach() {
-    app = startApp({ loadInitializers: true });
-    app.register('torii-service:mock-popup', mockPopup, { instantiate: false });
-    app.register('torii-service:fail-popup', failPopup, { instantiate: false });
-    app.inject('torii-provider', 'popup', 'torii-service:mock-popup');
-
-    torii = lookup(app, 'service:torii');
+    this.mockPopup = new MockPopup();
+    this.failPopup = new MockPopup({ state: 'invalid-state' });
+    this.owner.register('torii-service:mock-popup', this.mockPopup, {
+      instantiate: false,
+    });
+    this.owner.register('torii-service:fail-popup', this.failPopup, {
+      instantiate: false,
+    });
     configure({
       providers: {
         'azure-ad-oauth2': {
@@ -28,27 +33,29 @@ module('Integration | Provider | AzureAd', {
         },
       },
     });
-  },
+    this.owner.inject('torii-provider', 'popup', 'torii-service:mock-popup');
+    this.torii = this.owner.lookup('service:torii');
+  });
 
-  afterEach() {
-    mockPopup.opened = false;
-    run(app, 'destroy');
-  },
-});
+  hooks.afterEach(async function () {
+    this.mockPopup.opened = false;
+    this.failPopup.opened = false;
+    await teardownContext(this);
+    //this.torii.close('azure-ad-oauth2');
+  });
 
-test('Opens a popup to AzureAd', function (assert) {
-  run(function () {
-    torii.open('azure-ad-oauth2').finally(function () {
+  test('Opens a popup to AzureAd', function (assert) {
+    assert.expect(1);
+    const mockPopup = this.mockPopup;
+    this.torii.open('azure-ad-oauth2').finally(function () {
       assert.ok(mockPopup.opened, 'Popup service is opened');
     });
   });
-});
 
-test('Validates the state parameter in the response', function (assert) {
-  app.inject('torii-provider', 'popup', 'torii-service:fail-popup');
-
-  run(function () {
-    torii.open('azure-ad-oauth2').then(null, function (e) {
+  test('Validates the state parameter in the response', async function (assert) {
+    assert.expect(1);
+    this.owner.inject('torii-provider', 'popup', 'torii-service:fail-popup');
+    await this.torii.open('azure-ad-oauth2').catch(function (e) {
       assert.ok(
         /has an incorrect session state/.test(e.message),
         'authentication fails due to invalid session state response'

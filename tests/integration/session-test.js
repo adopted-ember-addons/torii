@@ -1,65 +1,55 @@
-import { resolve, reject } from 'rsvp';
-import { run } from '@ember/runloop';
-var session, user, adapter, app;
-
 import SessionService from '@adopted-ember-addons/torii/services/torii-session';
 import DummyAdapter from '../helpers/dummy-adapter';
 import DummySuccessProvider from '../helpers/dummy-success-provider';
 import DummyFailureProvider from '../helpers/dummy-failure-provider';
-import startApp from '../helpers/start-app';
-import lookup from '../helpers/lookup';
-import QUnit from 'qunit';
+import { module, test } from 'qunit';
+import { setupTest } from 'ember-qunit';
 
-const { module, test } = QUnit;
+module('Integration | Session (open)', function (hooks) {
+  setupTest(hooks);
 
-module('Integration | Session (open)', {
-  beforeEach() {
-    app = startApp({ loadInitializers: true });
-    app.register('service:session', SessionService);
-    app.register('torii-provider:dummy-success', DummySuccessProvider);
-    app.register('torii-provider:dummy-failure', DummyFailureProvider);
-    app.inject('service:session', 'torii', 'service:torii');
-    session = lookup(app, 'service:session');
-  },
-  afterEach() {
-    run(app, 'destroy');
-  },
-});
-
-test('session starts in unauthenticated unopened state', function (assert) {
-  assert.ok(!session.get('isOpening'), 'not opening');
-  assert.ok(!session.get('isAuthenticated'), 'not authenticated');
-});
-
-test('starting auth sets isOpening to true', function (assert) {
-  var provider = lookup(app, 'torii-provider:dummy-success');
-  var oldOpen = provider.open;
-
-  provider.open = function () {
-    assert.ok(true, 'calls provider.open');
-    assert.ok(session.get('isOpening'), 'session.isOpening is true');
-
-    return oldOpen.apply(this, arguments);
-  };
-
-  app.register('torii-adapter:dummy-success', DummyAdapter);
-  run(function () {
-    session.open('dummy-success');
+  hooks.beforeEach(function () {
+    this.owner.register('torii-provider:dummy-success', DummySuccessProvider);
+    this.owner.register('torii-provider:dummy-failure', DummyFailureProvider);
+    this.session = this.owner.lookup('service:session');
   });
-});
 
-test('successful auth sets isAuthenticated to true', function (assert) {
-  app.register('torii-adapter:dummy-success', DummyAdapter);
-  run(function () {
+  test('session starts in unauthenticated unopened state', function (assert) {
+    assert.notOk(this.session.get('isOpening'), 'not opening');
+    assert.notOk(this.session.get('isAuthenticated'), 'not authenticated');
+  });
+
+  test('starting auth sets isOpening to true', function (assert) {
+    assert.expect(2);
+    var provider = this.owner.lookup('torii-provider:dummy-success');
+    var oldOpen = provider.open;
+
+    var session = this.session;
+
+    provider.open = function () {
+      assert.ok(true, 'calls provider.open');
+      assert.ok(session.get('isOpening'), 'session.isOpening is true');
+
+      return oldOpen.apply(this, arguments);
+    };
+
+    this.owner.register('torii-adapter:dummy-success', DummyAdapter);
+    this.session.open('dummy-success');
+  });
+
+  test('successful auth sets isAuthenticated to true', function (assert) {
+    assert.expect(2);
+    this.owner.register('torii-adapter:dummy-success', DummyAdapter);
+    var session = this.session;
     session.open('dummy-success').then(function () {
-      assert.ok(!session.get('isOpening'), 'session is no longer opening');
+      assert.notOk(session.get('isOpening'), 'session is no longer opening');
       assert.ok(session.get('isAuthenticated'), 'session is authenticated');
     });
   });
-});
 
-test('failed auth sets isAuthenticated to false, sets error', function (assert) {
-  run(function () {
+  test('failed auth sets isAuthenticated to false, sets error', function (assert) {
+    assert.expect(4);
+    var session = this.session;
     session.open('dummy-failure').then(
       function () {
         assert.ok(false, 'should not resolve promise');
@@ -67,9 +57,9 @@ test('failed auth sets isAuthenticated to false, sets error', function (assert) 
       function () {
         assert.ok(true, 'rejects promise');
 
-        assert.ok(!session.get('isOpening'), 'session is no longer opening');
-        assert.ok(
-          !session.get('isAuthenticated'),
+        assert.notOk(session.get('isOpening'), 'session is no longer opening');
+        assert.notOk(
+          session.get('isAuthenticated'),
           'session is not authenticated'
         );
         assert.ok(session.get('errorMessage'), 'session has error message');
@@ -78,75 +68,76 @@ test('failed auth sets isAuthenticated to false, sets error', function (assert) 
   });
 });
 
-module('Integration | Session (close) ', {
-  beforeEach() {
-    app = startApp({ loadInitializers: true });
-    app.register('service:session', SessionService);
-    app.inject('service:session', 'torii', 'service:torii');
-    session = lookup(app, 'service:session');
-    adapter = lookup(app, 'torii-adapter:application');
-
-    // Put the session in an open state
-    user = { email: 'fake@fake.com' };
-    session.get('stateMachine').transitionTo('opening');
-    session.get('stateMachine').send('finishOpen', { currentUser: user });
-  },
-  afterEach() {
-    run(app, 'destroy');
-  },
-});
-
-test('session starts in authenticated opened state', function (assert) {
-  assert.ok(session.get('isAuthenticated'), 'not authenticated');
-  assert.deepEqual(session.get('currentUser'), user, 'has currentUser');
-});
-
-test('starting close sets isWorking to true', function (assert) {
-  adapter.close = function () {
-    assert.ok(true, 'calls adapter.close');
-    assert.ok(session.get('isWorking'), 'session.isWorking is true');
-    return resolve();
-  };
-
-  run(function () {
-    session.close();
+module('Integration | Session (close) ', function (hooks) {
+  setupTest(hooks);
+  hooks.beforeEach(function () {
+    this.session = this.owner.lookup('service:session');
+    this.adapter = this.owner.lookup('torii-adapter:application');
+    this.user = { email: 'fake@fake.com' };
+    this.session.get('stateMachine').transitionTo('opening');
+    this.session
+      .get('stateMachine')
+      .send('finishOpen', { currentUser: this.user });
   });
-});
 
-test('finished close sets isWorking to false, isAuthenticated false', function (assert) {
-  adapter.close = function () {
-    return resolve();
-  };
+  test('session starts in authenticated opened state', function (assert) {
+    assert.ok(this.session.get('isAuthenticated'), 'not authenticated');
+    assert.deepEqual(
+      this.session.get('currentUser'),
+      this.user,
+      'has currentUser'
+    );
+  });
 
-  run(function () {
+  test('starting close sets isWorking to true', function (assert) {
+    assert.expect(2);
+    const session = this.session;
+    this.adapter.close = function () {
+      assert.ok(true, 'calls adapter.close');
+      assert.ok(session.get('isWorking'), 'session.isWorking is true');
+      return Promise.resolve();
+    };
+    this.session.close();
+  });
+
+  test('finished close sets isWorking to false, isAuthenticated false', function (assert) {
+    assert.expect(3);
+    const session = this.session;
+    this.adapter.close = function () {
+      return Promise.resolve();
+    };
+
     session.close().then(
       function () {
-        assert.ok(!session.get('isWorking'), 'isWorking is false');
-        assert.ok(!session.get('isAuthenticated'), 'isAuthenticated is false');
-        assert.ok(!session.get('currentUser'), 'currentUser is false');
+        assert.notOk(session.get('isWorking'), 'isWorking is false');
+        assert.notOk(
+          session.get('isAuthenticated'),
+          'isAuthenticated is false'
+        );
+        assert.notOk(session.get('currentUser'), 'currentUser is false');
       },
       function (err) {
         assert.ok(false, 'promise rejected with error: ' + err);
       }
     );
   });
-});
 
-test('failed close sets isWorking to false, isAuthenticated true, error', function (assert) {
-  var error = 'Oh my';
+  test('failed close sets isWorking to false, isAuthenticated true, error', function (assert) {
+    assert.expect(3);
+    const session = this.session;
+    const error = 'Oh my';
 
-  adapter.close = function () {
-    return reject(error);
-  };
+    this.adapter.close = function () {
+      return Promise.reject(error);
+    };
 
-  run(function () {
     session.close().then(
       function () {
         assert.ok(false, 'promise resolved');
       },
       function (error) {
-        assert.ok(!session.get('isWorking'), 'isWorking is false');
-        assert.ok(!session.get('isAuthenticated'), 'isAuthenticated is true');
+        assert.notOk(session.get('isWorking'), 'isWorking is false');
+        assert.notOk(session.get('isAuthenticated'), 'isAuthenticated is true');
         assert.equal(session.get('errorMessage'), error, 'error is present');
       }
     );
