@@ -1,49 +1,57 @@
-import { run } from '@ember/runloop';
-var torii, app;
-
 import { configure } from '@adopted-ember-addons/torii/configuration';
 import MockPopup from '../../helpers/mock-popup';
-import startApp from '../../helpers/start-app';
-import lookup from '../../helpers/lookup';
-import QUnit from 'qunit';
+import { module, test } from 'qunit';
+import configuration from '../../../config/environment';
+import {
+  setupContext,
+  teardownContext,
+  setupApplicationContext,
+  setApplication,
+} from '@ember/test-helpers';
 
-const { module, test } = QUnit;
+import Application from 'dummy/app';
 
-var mockPopup = new MockPopup();
+module('Integration | Provider | Facebook OAuth2', function (hooks) {
+  hooks.beforeEach(async function () {
+    setApplication(Application.create(configuration.APP));
+    await setupContext(this, {});
+    await setupApplicationContext(this);
 
-var failPopup = new MockPopup({ state: 'invalid-state' });
-
-module('Integration | Provider | Facebook OAuth2', {
-  beforeEach() {
-    app = startApp({ loadInitializers: true });
-    app.register('torii-service:mock-popup', mockPopup, { instantiate: false });
-    app.register('torii-service:fail-popup', failPopup, { instantiate: false });
-    app.inject('torii-provider', 'popup', 'torii-service:mock-popup');
-
-    torii = lookup(app, 'service:torii');
+    this.mockPopup = new MockPopup();
+    this.failPopup = new MockPopup({ state: 'invalid-state' });
+    this.owner.register('torii-service:mock-popup', this.mockPopup, {
+      instantiate: false,
+    });
+    this.owner.register('torii-service:fail-popup', this.failPopup, {
+      instantiate: false,
+    });
     configure({
       providers: {
-        'facebook-oauth2': { apiKey: 'dummy' },
+        'facebook-oauth2': {
+          apiKey: 'dummy',
+        },
       },
     });
-  },
-  afterEach() {
-    mockPopup.opened = false;
-    run(app, 'destroy');
-  },
-});
+    this.owner.inject('torii-provider', 'popup', 'torii-service:mock-popup');
+    this.torii = this.owner.lookup('service:torii');
+  });
 
-test('Opens a popup to Facebook', function (assert) {
-  run(function () {
-    torii.open('facebook-oauth2').finally(function () {
+  hooks.afterEach(async function () {
+    this.mockPopup.opened = false;
+    this.failPopup.opened = false;
+    await teardownContext(this);
+  });
+  test('Opens a popup to Facebook', function (assert) {
+    assert.expect(1);
+    const mockPopup = this.mockPopup;
+    this.torii.open('facebook-oauth2').finally(function () {
       assert.ok(mockPopup.opened, 'Popup service is opened');
     });
   });
-});
 
-test("Resolves with an authentication object containing 'redirectUri'", function (assert) {
-  run(function () {
-    torii.open('facebook-oauth2').then(
+  test("Resolves with an authentication object containing 'redirectUri'", function (assert) {
+    assert.expect(1);
+    this.torii.open('facebook-oauth2').then(
       function (data) {
         assert.ok(data.redirectUri, 'Object has redirectUri');
       },
@@ -52,13 +60,12 @@ test("Resolves with an authentication object containing 'redirectUri'", function
       }
     );
   });
-});
 
-test('Validates the state parameter in the response', function (assert) {
-  app.inject('torii-provider', 'popup', 'torii-service:fail-popup');
+  test('Validates the state parameter in the response', function (assert) {
+    assert.expect(1);
+    this.owner.inject('torii-provider', 'popup', 'torii-service:fail-popup');
 
-  run(function () {
-    torii.open('facebook-oauth2').then(null, function (e) {
+    this.torii.open('facebook-oauth2').then(null, function (e) {
       assert.ok(
         /has an incorrect session state/.test(e.message),
         'authentication fails due to invalid session state response'

@@ -1,48 +1,52 @@
-import { merge } from '@ember/polyfills';
-import { run } from '@ember/runloop';
 import buildFBMock from '../../helpers/build-fb-mock';
 import { configure } from '@adopted-ember-addons/torii/configuration';
-import startApp from '../../helpers/start-app';
-import lookup from '../../helpers/lookup';
-import QUnit from 'qunit';
+import { module, test } from 'qunit';
 import {
   overrideLoadScript,
   resetLoadScript,
 } from '@adopted-ember-addons/torii/providers/-private/utils';
-const { module, test } = QUnit;
+import Application from 'dummy/app';
+import configuration from '../../../config/environment';
+import {
+  setupContext,
+  teardownContext,
+  setupApplicationContext,
+  setApplication,
+} from '@ember/test-helpers';
 
 var originalFB = window.FB;
-let providerConfiguration;
 
-var torii, app;
+const providerConfiguration = {
+  appId: 'dummy',
+};
 
-module('Integration | Provider | Facebook Connect', {
-  beforeEach() {
-    app = startApp({ loadInitializers: true });
-    torii = lookup(app, 'service:torii');
-    providerConfiguration = {
-      appId: 'dummy',
-    };
+module('Integration | Provider | Facebook Connect', function (hooks) {
+  hooks.beforeEach(async function () {
+    setApplication(Application.create(configuration.APP));
+    await setupContext(this, {});
+    await setupApplicationContext(this);
     configure({
       providers: {
         'facebook-connect': providerConfiguration,
       },
     });
+    this.torii = this.owner.lookup('service:torii');
+
     window.FB = buildFBMock();
-  },
-  afterEach() {
+  });
+
+  hooks.afterEach(async function () {
     window.FB = originalFB;
     resetLoadScript();
-    run(app, 'destroy');
-  },
-});
-
-test('Opens facebook connect session', function (assert) {
-  overrideLoadScript(function () {
-    window.fbAsyncInit();
+    await teardownContext(this);
   });
-  run(function () {
-    torii.open('facebook-connect').then(
+
+  test('Opens facebook connect session', function (assert) {
+    assert.expect(1);
+    overrideLoadScript(function () {
+      window.fbAsyncInit();
+    });
+    this.torii.open('facebook-connect').then(
       function () {
         assert.ok(true, 'Facebook connect opened');
       },
@@ -51,35 +55,35 @@ test('Opens facebook connect session', function (assert) {
       }
     );
   });
-});
 
-test('Returns the scopes granted when configured', function (assert) {
-  overrideLoadScript(function () {
-    window.fbAsyncInit();
-  });
-  configure({
-    providers: {
-      'facebook-connect': merge(providerConfiguration, { returnScopes: true }),
-    },
-  });
-  run(function () {
-    torii.open('facebook-connect').then(function (data) {
-      assert.equal('email', data.grantedScopes);
+  test('Returns the scopes granted when configured', function (assert) {
+    assert.expect(1);
+    overrideLoadScript(function () {
+      window.fbAsyncInit();
+    });
+    configure({
+      providers: {
+        'facebook-connect': Object.assign({}, providerConfiguration, {
+          returnScopes: true,
+        }),
+      },
+    });
+    this.torii.open('facebook-connect').then(function (data) {
+      assert.equal(data.grantedScopes, 'email');
     });
   });
-});
 
-test('Supports custom auth_type on login', function (assert) {
-  overrideLoadScript(function () {
-    window.fbAsyncInit();
-  });
-  run(function () {
-    torii
+  test('Supports custom auth_type on login', function (assert) {
+    assert.expect(1);
+    overrideLoadScript(function () {
+      window.fbAsyncInit();
+    });
+    this.torii
       .open('facebook-connect', { authType: 'rerequest' })
       .then(function (data) {
         assert.equal(
-          5678,
           data.expiresIn,
+          5678,
           'expriesIn extended when rerequest found'
         );
       });
