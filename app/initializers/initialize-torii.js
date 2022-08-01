@@ -10,8 +10,7 @@ var initializer = {
       application = arguments[1];
     }
     configure(config.torii || {});
-    bootstrapTorii(application);
-    application.inject('route', 'torii', 'service:torii');
+    bootstrapTorii(application);    application.inject('route', 'torii', 'service:torii'); // TODO: .inject is deprecated / does nothing as of 4.0.0
   },
 };
 

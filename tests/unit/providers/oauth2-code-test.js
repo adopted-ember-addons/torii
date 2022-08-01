@@ -103,17 +103,19 @@ module(
         },
       });
 
-      var mockPopup = {
-        open() /*url, responseParams*/ {
-          assert.ok(true, 'calls popup.open');
+      var MockProvider = Provider.extend({
+        popup: {
+          open() /*url, responseParams*/ {
+            assert.ok(true, 'calls popup.open');
 
-          return Promise.resolve({ state: 'state' });
+            return Promise.resolve({ state: 'state' });
+          },
         },
-      };
+      });
 
-      this.provider.set('popup', mockPopup);
+      var mockProvider = MockProvider.create();
 
-      this.provider
+      mockProvider
         .open()
         .then(function () {
           assert.ok(false, '#open should not resolve');
@@ -141,20 +143,22 @@ module(
         },
       });
 
-      var mockPopup = {
-        open() /*url, responseParams*/ {
-          assert.ok(true, 'calls popup.open');
-          return Promise.resolve({
-            token_id: 'test',
-            authorization_code: 'pief',
-            state: 'test-state',
-          });
+      var MockTokenProvider = TokenProvider.extend({
+        popup: {
+          open() /*url, responseParams*/ {
+            assert.ok(true, 'calls popup.open');
+            return Promise.resolve({
+              token_id: 'test',
+              authorization_code: 'pief',
+              state: 'test-state',
+            });
+          },
         },
-      };
+      });
 
-      this.tokenProvider.set('popup', mockPopup);
+      var mockTokenProvider = MockTokenProvider.create();
 
-      this.tokenProvider.open().then(function (res) {
+      mockTokenProvider.open().then(function (res) {
         assert.strictEqual(
           res.authorizationCode,
           'test',
@@ -219,19 +223,21 @@ module(
         },
       });
 
-      var mockPopup = {
-        open() /*url, responseParams*/ {
-          return Promise.resolve({
-            token_id: encodeURIComponent('test=='),
-            authorization_code: 'pief',
-            state: 'test-state',
-          });
+      var MockTokenProvider = TokenProvider.extend({
+        popup: {
+          open() /*url, responseParams*/ {
+            return Promise.resolve({
+              token_id: encodeURIComponent('test=='),
+              authorization_code: 'pief',
+              state: 'test-state',
+            });
+          },
         },
-      };
+      });
 
-      this.tokenProvider.set('popup', mockPopup);
+      var mockTokenProvider = MockTokenProvider.create();
 
-      this.tokenProvider.open().then(function (res) {
+      mockTokenProvider.open().then(function (res) {
         assert.equal(
           res.authorizationCode,
           'test==',

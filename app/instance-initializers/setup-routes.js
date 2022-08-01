@@ -24,8 +24,8 @@ export default {
       if (hasAuthenticatedRoutes) {
         bootstrapRouting(applicationInstance, authenticatedRoutes);
       }
-      router.off('willTransition', setupRoutes);
+      router.off('routeWillChange', setupRoutes);
     };
-    router.on('willTransition', setupRoutes);
+    router.on('routeWillChange', setupRoutes);
   },
 };
