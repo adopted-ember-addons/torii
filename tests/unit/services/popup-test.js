@@ -93,7 +93,6 @@ module('Unit | Service | Popup', function (hooks) {
           assert.ok(false, 'rejected the open promise');
         }
       )
-      .catch(err => {console.log(err)})
       .finally(function () {
         done();
       });
