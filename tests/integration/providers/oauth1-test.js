@@ -28,10 +28,9 @@ module('Integration | Provider | Oauth1', function (hooks) {
     setApplication(Application.create(configuration.APP));
     await setupContext(this, {});
     await setupApplicationContext(this);
-    this.owner.register('torii-service:mock-popup', mockPopup, {
+    this.owner.register('torii-service:popup', mockPopup, {
       instantiate: false,
     });
-    this.owner.inject('torii-provider', 'popup', 'torii-service:mock-popup');
     this.owner.register('torii-provider:' + providerName, OAuth1Provider);
 
     this.torii = this.owner.lookup('service:torii');

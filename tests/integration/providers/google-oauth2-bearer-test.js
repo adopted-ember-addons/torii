@@ -23,10 +23,9 @@ module('Integration | Provider | Google Bearer', function (hooks) {
         return Promise.resolve({ access_token: 'test' });
       },
     };
-    this.owner.register('torii-service:mock-popup', this.mockPopup, {
+    this.owner.register('torii-service:popup', this.mockPopup, {
       instantiate: false,
     });
-    this.owner.inject('torii-provider', 'popup', 'torii-service:mock-popup');
 
     this.torii = this.owner.lookup('service:torii');
 

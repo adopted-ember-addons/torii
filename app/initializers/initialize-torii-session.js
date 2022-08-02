@@ -18,7 +18,7 @@ export default {
     bootstrapSession(application, configuration.sessionServiceName);
 
     var sessionFactoryName = 'service:' + configuration.sessionServiceName;
-    application.inject(
+    application.inject( // TODO: .inject is deprecated / does nothing as of 4.0.0
       'adapter',
       configuration.sessionServiceName,
       sessionFactoryName

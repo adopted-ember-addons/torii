@@ -10,22 +10,15 @@ import {
 } from '@ember/test-helpers';
 import Application from 'dummy/app';
 
-var mockPopup = new MockPopup();
-
-var failPopup = new MockPopup({ state: 'invalid-state' });
-
 module('Integration | Provider | Linked In', function (hooks) {
   hooks.beforeEach(async function () {
     setApplication(Application.create(configuration.APP));
     await setupContext(this, {});
     await setupApplicationContext(this);
-    this.owner.register('torii-service:mock-popup', mockPopup, {
-      instantiate: false,
-    });
-    this.owner.register('torii-service:fail-popup', failPopup, {
-      instantiate: false,
-    });
-    this.owner.inject('torii-provider', 'popup', 'torii-service:mock-popup');
+
+    this.mockPopup = new MockPopup();
+    this.failPopup = new MockPopup({ state: 'invalid-state' });
+
     this.torii = this.owner.lookup('service:torii');
     configure({
       providers: {
@@ -35,20 +28,31 @@ module('Integration | Provider | Linked In', function (hooks) {
   });
 
   hooks.afterEach(async function () {
-    mockPopup.opened = false;
+    this.mockPopup.opened = false;
+    this.failPopup.opened = false;
     await teardownContext(this);
   });
 
   test('Opens a popup to Linked In', function (assert) {
+    const mockPopup = this.mockPopup;
+
+    this.owner.register('torii-service:popup', mockPopup, {
+      instantiate: false,
+    });
+
     assert.expect(1);
+
     this.torii.open('linked-in-oauth2').finally(function () {
       assert.ok(mockPopup.opened, 'Popup service is opened');
     });
   });
 
   test('Validates the state parameter in the response', function (assert) {
+    this.owner.register('torii-service:popup', this.failPopup, {
+      instantiate: false,
+    });
+
     assert.expect(1);
-    this.owner.inject('torii-provider', 'popup', 'torii-service:fail-popup');
 
     this.torii.open('linked-in-oauth2').then(null, function (e) {
       assert.ok(

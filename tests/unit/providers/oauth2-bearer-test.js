@@ -89,17 +89,19 @@ module(
         },
       });
 
-      var mockPopup = {
-        open() /*url, responseParams*/ {
-          assert.ok(true, 'calls popup.open');
+      var MockProvider = Provider.extend({
+        popup: {
+          open() /*url, responseParams*/ {
+            assert.ok(true, 'calls popup.open');
 
-          return Promise.resolve({ state: 'state' });
+            return Promise.resolve({ state: 'state' });
+          },
         },
-      };
+      });
 
-      this.provider.set('popup', mockPopup);
+      var mockPopup = MockProvider.create();
 
-      this.provider
+      mockPopup
         .open()
         .then(function () {
           assert.ok(false, '#open should not resolve');

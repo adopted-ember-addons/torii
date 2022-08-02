@@ -20,12 +20,7 @@ module('Integration | Provider | AzureAd', function (hooks) {
 
     this.mockPopup = new MockPopup();
     this.failPopup = new MockPopup({ state: 'invalid-state' });
-    this.owner.register('torii-service:mock-popup', this.mockPopup, {
-      instantiate: false,
-    });
-    this.owner.register('torii-service:fail-popup', this.failPopup, {
-      instantiate: false,
-    });
+
     configure({
       providers: {
         'azure-ad-oauth2': {
@@ -33,7 +28,6 @@ module('Integration | Provider | AzureAd', function (hooks) {
         },
       },
     });
-    this.owner.inject('torii-provider', 'popup', 'torii-service:mock-popup');
     this.torii = this.owner.lookup('service:torii');
   });
 
@@ -41,20 +35,29 @@ module('Integration | Provider | AzureAd', function (hooks) {
     this.mockPopup.opened = false;
     this.failPopup.opened = false;
     await teardownContext(this);
-    //this.torii.close('azure-ad-oauth2');
   });
 
   test('Opens a popup to AzureAd', function (assert) {
-    assert.expect(1);
     const mockPopup = this.mockPopup;
+
+    this.owner.register('torii-service:popup', mockPopup, {
+      instantiate: false,
+    });
+
+    assert.expect(1);
+
     this.torii.open('azure-ad-oauth2').finally(function () {
       assert.ok(mockPopup.opened, 'Popup service is opened');
     });
   });
 
   test('Validates the state parameter in the response', async function (assert) {
+    this.owner.register('torii-service:popup', this.failPopup, {
+      instantiate: false,
+    });
+
     assert.expect(1);
-    this.owner.inject('torii-provider', 'popup', 'torii-service:fail-popup');
+
     await this.torii.open('azure-ad-oauth2').catch(function (e) {
       assert.ok(
         /has an incorrect session state/.test(e.message),

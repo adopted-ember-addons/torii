@@ -11,7 +11,7 @@ var initializer = {
     }
     configure(config.torii || {});
     bootstrapTorii(application);
-    application.inject('route', 'torii', 'service:torii');
+    application.inject('route', 'torii', 'service:torii'); // TODO: .inject is deprecated / does nothing as of 4.0.0
   },
 };
 

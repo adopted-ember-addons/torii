@@ -8,7 +8,6 @@ import {
   setupApplicationContext,
   setApplication,
 } from '@ember/test-helpers';
-
 import Application from 'dummy/app';
 
 module('Integration | Provider | Facebook OAuth2', function (hooks) {
@@ -19,12 +18,7 @@ module('Integration | Provider | Facebook OAuth2', function (hooks) {
 
     this.mockPopup = new MockPopup();
     this.failPopup = new MockPopup({ state: 'invalid-state' });
-    this.owner.register('torii-service:mock-popup', this.mockPopup, {
-      instantiate: false,
-    });
-    this.owner.register('torii-service:fail-popup', this.failPopup, {
-      instantiate: false,
-    });
+
     configure({
       providers: {
         'facebook-oauth2': {
@@ -32,7 +26,6 @@ module('Integration | Provider | Facebook OAuth2', function (hooks) {
         },
       },
     });
-    this.owner.inject('torii-provider', 'popup', 'torii-service:mock-popup');
     this.torii = this.owner.lookup('service:torii');
   });
 
@@ -42,15 +35,28 @@ module('Integration | Provider | Facebook OAuth2', function (hooks) {
     await teardownContext(this);
   });
   test('Opens a popup to Facebook', function (assert) {
-    assert.expect(1);
     const mockPopup = this.mockPopup;
+
+    this.owner.register('torii-service:popup', mockPopup, {
+      instantiate: false,
+    });
+
+    assert.expect(1);
+
     this.torii.open('facebook-oauth2').finally(function () {
       assert.ok(mockPopup.opened, 'Popup service is opened');
     });
   });
 
   test("Resolves with an authentication object containing 'redirectUri'", function (assert) {
+    const mockPopup = this.mockPopup;
+
+    this.owner.register('torii-service:popup', mockPopup, {
+      instantiate: false,
+    });
+
     assert.expect(1);
+
     this.torii.open('facebook-oauth2').then(
       function (data) {
         assert.ok(data.redirectUri, 'Object has redirectUri');
@@ -62,8 +68,11 @@ module('Integration | Provider | Facebook OAuth2', function (hooks) {
   });
 
   test('Validates the state parameter in the response', function (assert) {
+    this.owner.register('torii-service:popup', this.failPopup, {
+      instantiate: false,
+    });
+
     assert.expect(1);
-    this.owner.inject('torii-provider', 'popup', 'torii-service:fail-popup');
 
     this.torii.open('facebook-oauth2').then(null, function (e) {
       assert.ok(
