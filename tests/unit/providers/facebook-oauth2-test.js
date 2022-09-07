@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
-import { configure } from 'torii/configuration';
+import { configure } from '@adopted-ember-addons/torii/configuration';
 
-import FacebookProvider from 'torii/providers/facebook-oauth2';
+import FacebookProvider from '@adopted-ember-addons/torii/providers/facebook-oauth2';
 
 module('Unit | Provider | FacebookOAuth2Provider', function (hooks) {
   let provider;

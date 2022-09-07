@@ -1,9 +1,9 @@
 /* eslint-disable qunit/require-expect */
 import { setupTest } from 'ember-qunit';
-import { configure } from 'torii/configuration';
+import { configure } from '@adopted-ember-addons/torii/configuration';
 import { module, test } from 'qunit';
 
-import OAuth1Provider from 'torii/providers/oauth1';
+import OAuth1Provider from '@adopted-ember-addons/torii/providers/oauth1';
 import MockPopupService from '../../helpers/mock-popup-service';
 
 const requestTokenUri = 'http://localhost:3000/oauth/callback';

@@ -2,9 +2,9 @@
 import { later } from '@ember/runloop';
 import { Promise as EmberPromise, reject } from 'rsvp';
 import Route from '@ember/routing/route';
-import ApplicationRouteMixin from 'torii/routing/application-route-mixin';
+import ApplicationRouteMixin from '@adopted-ember-addons/torii/routing/application-route-mixin';
 import { module, test } from 'qunit';
-import { configure, getConfiguration } from 'torii/configuration';
+import { configure, getConfiguration } from '@adopted-ember-addons/torii/configuration';
 import { setupTest } from 'ember-qunit';
 import { setOwner } from '@ember/application';
 import { inject as service } from '@ember/service';

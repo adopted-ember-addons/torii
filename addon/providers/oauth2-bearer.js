@@ -1,5 +1,5 @@
 /* eslint-disable ember/no-get */
-import Provider from 'torii/providers/oauth2-code';
+import Provider from '@adopted-ember-addons/torii/providers/oauth2-code';
 
 var Oauth2Bearer = Provider.extend({
   responseType: 'token',

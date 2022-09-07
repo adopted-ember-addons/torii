@@ -26,7 +26,7 @@ session and torii services like so:
 
 ```
 import Route from '@ember/routing/route';
-import AuthenticatedRouteMixin from 'torii/routing/authenticated-route-mixin';
+import AuthenticatedRouteMixin from '@adopted-ember-addons/torii/routing/authenticated-route-mixin';
 import { inject as service } from '@ember/service';
 
 export default class MyAuthenticatedRoute extends Route.extend(AuthenticatedRouteMixin) {

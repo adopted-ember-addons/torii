@@ -1,4 +1,4 @@
-import Torii from 'torii/services/torii';
+import Torii from '@adopted-ember-addons/torii/services/torii';
 import { module, test } from 'qunit';
 
 module('Unit | Torii', function (/*hooks*/) {

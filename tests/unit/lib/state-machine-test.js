@@ -1,5 +1,5 @@
 /* eslint-disable qunit/no-negated-ok */
-import StateMachine from 'torii/lib/state-machine';
+import StateMachine from '@adopted-ember-addons/torii/lib/state-machine';
 import { module, test } from 'qunit';
 
 module('Unit | Lib | State Machine', function (/*hooks*/) {

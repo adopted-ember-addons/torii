@@ -1,6 +1,6 @@
 import { run } from '@ember/runloop';
-import { getConfiguration, configure } from 'torii/configuration';
-import StripeConnectProvider from 'torii/providers/stripe-connect';
+import { getConfiguration, configure } from '@adopted-ember-addons/torii/configuration';
+import StripeConnectProvider from '@adopted-ember-addons/torii/providers/stripe-connect';
 import QUnit from 'qunit';
 
 let { module, test } = QUnit;

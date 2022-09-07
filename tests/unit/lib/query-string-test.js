@@ -1,6 +1,6 @@
 import { run } from '@ember/runloop';
 import EmberObject from '@ember/object';
-import QueryString from 'torii/lib/query-string';
+import QueryString from '@adopted-ember-addons/torii/lib/query-string';
 import { module, test } from 'qunit';
 
 let { freeze } = Object;

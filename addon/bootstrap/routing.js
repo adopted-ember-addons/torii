@@ -1,6 +1,6 @@
-import ApplicationRouteMixin from 'torii/routing/application-route-mixin';
-import AuthenticatedRouteMixin from 'torii/routing/authenticated-route-mixin';
-import { lookup, lookupFactory, register } from 'torii/lib/container-utils';
+import ApplicationRouteMixin from '@adopted-ember-addons/torii/routing/application-route-mixin';
+import AuthenticatedRouteMixin from '@adopted-ember-addons/torii/routing/authenticated-route-mixin';
+import { lookup, lookupFactory, register } from '@adopted-ember-addons/torii/lib/container-utils';
 
 var AuthenticatedRoute = null;
 

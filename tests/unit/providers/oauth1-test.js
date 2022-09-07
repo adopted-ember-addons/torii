@@ -1,7 +1,7 @@
-import { configure } from 'torii/configuration';
+import { configure } from '@adopted-ember-addons/torii/configuration';
 import { module, test } from 'qunit';
 
-import BaseProvider from 'torii/providers/oauth1';
+import BaseProvider from '@adopted-ember-addons/torii/providers/oauth1';
 
 module(
   'Unit | Provider | MockOauth1Provider (oauth1 subclass)',

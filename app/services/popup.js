@@ -1,1 +1,1 @@
-export { default } from 'torii/services/popup';
+export { default } from '@adopted-ember-addons/torii/services/popup';

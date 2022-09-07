@@ -3,13 +3,13 @@ import { later, run, cancel } from '@ember/runloop';
 import { Promise as EmberPromise } from 'rsvp';
 import Mixin from '@ember/object/mixin';
 import { on } from '@ember/object/evented';
-import UUIDGenerator from 'torii/lib/uuid-generator';
-import PopupIdSerializer from 'torii/lib/popup-id-serializer';
-import ParseQueryString from 'torii/lib/parse-query-string';
-import assert from 'torii/lib/assert';
+import UUIDGenerator from '@adopted-ember-addons/torii/lib/uuid-generator';
+import PopupIdSerializer from '@adopted-ember-addons/torii/lib/popup-id-serializer';
+import ParseQueryString from '@adopted-ember-addons/torii/lib/parse-query-string';
+import assert from '@adopted-ember-addons/torii/lib/assert';
 export const CURRENT_REQUEST_KEY = '__torii_request';
 export const WARNING_KEY = '__torii_redirect_warning';
-import { getConfiguration } from 'torii/configuration';
+import { getConfiguration } from '@adopted-ember-addons/torii/configuration';
 
 function parseMessage(url, keys) {
   var parser = ParseQueryString.create({ url: url, keys: keys });

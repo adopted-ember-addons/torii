@@ -1,7 +1,7 @@
 /* eslint-disable ember/no-mixins, ember/no-classic-classes */
 import Evented from '@ember/object/evented';
 import EmberObject from '@ember/object';
-import UiServiceMixin from 'torii/mixins/ui-service-mixin';
+import UiServiceMixin from '@adopted-ember-addons/torii/mixins/ui-service-mixin';
 
 var Iframe = EmberObject.extend(Evented, UiServiceMixin, {
   openRemote(url) {

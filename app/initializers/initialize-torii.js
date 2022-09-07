@@ -1,5 +1,5 @@
-import bootstrapTorii from 'torii/bootstrap/torii';
-import { configure } from 'torii/configuration';
+import bootstrapTorii from '@adopted-ember-addons/torii/bootstrap/torii';
+import { configure } from '@adopted-ember-addons/torii/configuration';
 import config from '../config/environment';
 
 var initializer = {

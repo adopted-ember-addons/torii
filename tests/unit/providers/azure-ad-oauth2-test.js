@@ -1,7 +1,7 @@
 /* eslint-disable qunit/no-ok-equality */
 import { module, test } from 'qunit';
-import { configure } from 'torii/configuration';
-import AzureAdProvider from 'torii/providers/azure-ad-oauth2';
+import { configure } from '@adopted-ember-addons/torii/configuration';
+import AzureAdProvider from '@adopted-ember-addons/torii/providers/azure-ad-oauth2';
 
 module('Unit | Provider | AzureAdOAuth2Provider', function (hooks) {
   let provider;

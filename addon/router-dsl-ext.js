@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import Router from '@ember/routing/router';
-import getRouterLib from 'torii/compat/get-router-lib';
+import getRouterLib from '@adopted-ember-addons/torii/compat/get-router-lib';
 
 var proto = Ember.RouterDSL.prototype;
 

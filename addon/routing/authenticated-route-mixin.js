@@ -3,7 +3,7 @@ import { resolve } from 'rsvp';
 import Mixin from '@ember/object/mixin';
 import { get } from '@ember/object';
 import { getOwner } from '@ember/application';
-import { getConfiguration } from 'torii/configuration';
+import { getConfiguration } from '@adopted-ember-addons/torii/configuration';
 
 export default Mixin.create({
   beforeModel(transition) {

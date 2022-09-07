@@ -1,7 +1,7 @@
 /* eslint-disable ember/no-classic-classes */
 import Service from '@ember/service';
 import { Promise as EmberPromise } from 'rsvp';
-import { getOwner } from 'torii/lib/container-utils';
+import { getOwner } from '@adopted-ember-addons/torii/lib/container-utils';
 
 function lookupProvider(container, providerName) {
   return container.lookup('torii-provider:' + providerName);

@@ -1,8 +1,8 @@
 /* eslint-disable ember/avoid-leaking-state-in-ember-objects, qunit/no-ok-equality */
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import { configure } from 'torii/configuration';
-import BaseProvider from 'torii/providers/oauth2-code';
+import { configure } from '@adopted-ember-addons/torii/configuration';
+import BaseProvider from '@adopted-ember-addons/torii/providers/oauth2-code';
 
 module(
   'Unit | Provider | MockOauth2Provider (oauth2-code subclass)',

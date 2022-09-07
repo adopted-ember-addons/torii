@@ -1,5 +1,5 @@
 import config from '../config/environment';
-import RedirectHandler from 'torii/redirect-handler';
+import RedirectHandler from '@adopted-ember-addons/torii/redirect-handler';
 
 export default {
   name: 'torii-callback',

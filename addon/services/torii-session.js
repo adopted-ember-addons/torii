@@ -4,8 +4,8 @@ import { Promise as EmberPromise, reject } from 'rsvp';
 import Service from '@ember/service';
 import { on } from '@ember/object/evented';
 import { computed } from '@ember/object';
-import createStateMachine from 'torii/session/state-machine';
-import { getOwner } from 'torii/lib/container-utils';
+import createStateMachine from '@adopted-ember-addons/torii/session/state-machine';
+import { getOwner } from '@adopted-ember-addons/torii/lib/container-utils';
 
 function lookupAdapter(container, authenticationType) {
   var adapter = container.lookup('torii-adapter:' + authenticationType);

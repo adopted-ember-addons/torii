@@ -1,4 +1,4 @@
-import UUIDGenerator from 'torii/lib/uuid-generator';
+import UUIDGenerator from '@adopted-ember-addons/torii/lib/uuid-generator';
 import { module, test } from 'qunit';
 
 module('Unit | Lib | UUIDGenerator', function (/*hooks*/) {

@@ -1,5 +1,5 @@
 /* eslint-disable qunit/literal-compare-order */
-import PopupIdSerializer from 'torii/lib/popup-id-serializer';
+import PopupIdSerializer from '@adopted-ember-addons/torii/lib/popup-id-serializer';
 
 import { module, test } from 'qunit';
 

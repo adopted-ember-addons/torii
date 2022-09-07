@@ -1,7 +1,7 @@
 /* eslint-disable ember/require-computed-property-dependencies, ember/no-get, ember/avoid-leaking-state-in-ember-objects */
 import { computed } from '@ember/object';
-import Oauth2 from 'torii/providers/oauth2-code';
-import { configurable } from 'torii/configuration';
+import Oauth2 from '@adopted-ember-addons/torii/providers/oauth2-code';
+import { configurable } from '@adopted-ember-addons/torii/configuration';
 
 /**
  * This class implements authentication against AzureAD

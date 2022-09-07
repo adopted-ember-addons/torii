@@ -1,5 +1,5 @@
-import PopupService from 'torii/services/popup';
-import ParseQueryString from 'torii/lib/parse-query-string';
+import PopupService from '@adopted-ember-addons/torii/services/popup';
+import ParseQueryString from '@adopted-ember-addons/torii/lib/parse-query-string';
 import { resolve } from 'rsvp';
 
 export default class MyFirstPopup extends PopupService {

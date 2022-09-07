@@ -10,9 +10,9 @@
 
 import { run } from '@ember/runloop';
 import { Promise as EmberPromise } from 'rsvp';
-import Provider from 'torii/providers/base';
+import Provider from '@adopted-ember-addons/torii/providers/base';
 import { loadScript } from './-private/utils';
-import { configurable } from 'torii/configuration';
+import { configurable } from '@adopted-ember-addons/torii/configuration';
 
 var fbPromise;
 

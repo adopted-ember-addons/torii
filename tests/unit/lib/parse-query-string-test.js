@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 
-import ParseQueryString from 'torii/lib/parse-query-string';
+import ParseQueryString from '@adopted-ember-addons/torii/lib/parse-query-string';
 
 module('Unit | Lib | ParseQueryString', function (/*hooks*/) {
   test('parses each passed key', function (assert) {

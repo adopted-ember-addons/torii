@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
-import { configure } from 'torii/configuration';
+import { configure } from '@adopted-ember-addons/torii/configuration';
 
-import GoogleProvider from 'torii/providers/google-oauth2';
+import GoogleProvider from '@adopted-ember-addons/torii/providers/google-oauth2';
 
 module('Unit | Provider | GoogleAuth2Provider', function (hooks) {
   let provider;

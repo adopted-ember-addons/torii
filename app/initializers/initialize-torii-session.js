@@ -1,5 +1,5 @@
-import bootstrapSession from 'torii/bootstrap/session';
-import { getConfiguration } from 'torii/configuration';
+import bootstrapSession from '@adopted-ember-addons/torii/bootstrap/session';
+import { getConfiguration } from '@adopted-ember-addons/torii/configuration';
 
 export default {
   name: 'torii-session',

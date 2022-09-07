@@ -1,5 +1,5 @@
 /* eslint-disable no-prototype-builtins */
-import StateMachine from 'torii/lib/state-machine';
+import StateMachine from '@adopted-ember-addons/torii/lib/state-machine';
 import { set } from '@ember/object';
 
 var transitionTo = StateMachine.transitionTo;

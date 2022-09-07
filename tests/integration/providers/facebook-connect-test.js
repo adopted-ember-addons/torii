@@ -1,11 +1,11 @@
 /* eslint-disable qunit/require-expect, qunit/literal-compare-order */
 import { setupTest } from 'ember-qunit';
 import { module, test } from 'qunit';
-import { configure } from 'torii/configuration';
+import { configure } from '@adopted-ember-addons/torii/configuration';
 import {
   overrideLoadScript,
   resetLoadScript,
-} from 'torii/providers/-private/utils';
+} from '@adopted-ember-addons/torii/providers/-private/utils';
 
 import buildFBMock from '../../helpers/build-fb-mock';
 

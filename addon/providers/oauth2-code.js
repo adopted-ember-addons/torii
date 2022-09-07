@@ -1,10 +1,10 @@
 /* eslint-disable ember/avoid-leaking-state-in-ember-objects, ember/no-get, ember/no-side-effects */
 import { computed } from '@ember/object';
-import Provider from 'torii/providers/base';
-import { configurable } from 'torii/configuration';
-import QueryString from 'torii/lib/query-string';
-import requiredProperty from 'torii/lib/required-property';
-import randomUrlSafe from 'torii/lib/random-url-safe';
+import Provider from '@adopted-ember-addons/torii/providers/base';
+import { configurable } from '@adopted-ember-addons/torii/configuration';
+import QueryString from '@adopted-ember-addons/torii/lib/query-string';
+import requiredProperty from '@adopted-ember-addons/torii/lib/required-property';
+import randomUrlSafe from '@adopted-ember-addons/torii/lib/random-url-safe';
 
 function currentUrl() {
   var url = [

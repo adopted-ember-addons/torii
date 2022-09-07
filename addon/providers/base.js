@@ -1,9 +1,9 @@
 /* eslint-disable ember/no-classic-classes, ember/no-get */
 import EmberObject, { computed } from '@ember/object';
-import requiredProperty from 'torii/lib/required-property';
-import { getOwner } from 'torii/lib/container-utils';
-import { configurable } from 'torii/configuration';
-import configuration from 'torii/configuration';
+import requiredProperty from '@adopted-ember-addons/torii/lib/required-property';
+import { getOwner } from '@adopted-ember-addons/torii/lib/container-utils';
+import { configurable } from '@adopted-ember-addons/torii/configuration';
+import configuration from '@adopted-ember-addons/torii/configuration';
 
 var DEFAULT_REMOTE_SERVICE_NAME = 'popup';
 

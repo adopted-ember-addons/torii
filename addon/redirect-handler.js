@@ -13,7 +13,7 @@ import EmberObject from '@ember/object';
 import EmberError from '@ember/error';
 
 import { CURRENT_REQUEST_KEY, WARNING_KEY } from './mixins/ui-service-mixin';
-import configuration from 'torii/configuration';
+import configuration from '@adopted-ember-addons/torii/configuration';
 
 export class ToriiRedirectError extends EmberError {
   constructor() {

@@ -1,6 +1,6 @@
 /* eslint-disable no-prototype-builtins */
-import { lookup } from 'torii/lib/container-utils';
-import { getConfiguration } from 'torii/configuration';
+import { lookup } from '@adopted-ember-addons/torii/lib/container-utils';
+import { getConfiguration } from '@adopted-ember-addons/torii/configuration';
 
 export default {
   name: 'torii-walk-providers',

@@ -1,6 +1,6 @@
 /* eslint-disable ember/avoid-leaking-state-in-ember-objects */
-import Oauth2 from 'torii/providers/oauth2-code';
-import { configurable } from 'torii/configuration';
+import Oauth2 from '@adopted-ember-addons/torii/providers/oauth2-code';
+import { configurable } from '@adopted-ember-addons/torii/configuration';
 
 /**
  * This class implements authentication against Github

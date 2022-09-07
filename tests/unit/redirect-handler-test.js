@@ -1,7 +1,7 @@
 /* eslint-disable ember/no-mixins, qunit/no-conditional-assertions, qunit/no-negated-ok, qunit/require-expect */
 import { run } from '@ember/runloop';
-import RedirectHandler from 'torii/redirect-handler';
-import { CURRENT_REQUEST_KEY } from 'torii/mixins/ui-service-mixin';
+import RedirectHandler from '@adopted-ember-addons/torii/redirect-handler';
+import { CURRENT_REQUEST_KEY } from '@adopted-ember-addons/torii/mixins/ui-service-mixin';
 import { module, test } from 'qunit';
 
 module('Unit | RedirectHandler', function (/*hooks*/) {

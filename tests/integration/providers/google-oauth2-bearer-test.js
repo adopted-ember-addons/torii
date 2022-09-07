@@ -1,5 +1,5 @@
 import { setupTest } from 'ember-qunit';
-import { configure } from 'torii/configuration';
+import { configure } from '@adopted-ember-addons/torii/configuration';
 import { module, test } from 'qunit';
 
 import MockPopupService from '../../helpers/mock-popup-service';

@@ -1,8 +1,8 @@
 /* eslint-disable ember/no-mixins, qunit/resolve-async, qunit/literal-compare-order, qunit/require-expect, qunit/no-negated-ok */
 import { run } from '@ember/runloop';
-import Popup from 'torii/services/popup';
-import PopupIdSerializer from 'torii/lib/popup-id-serializer';
-import { CURRENT_REQUEST_KEY } from 'torii/mixins/ui-service-mixin';
+import Popup from '@adopted-ember-addons/torii/services/popup';
+import PopupIdSerializer from '@adopted-ember-addons/torii/lib/popup-id-serializer';
+import { CURRENT_REQUEST_KEY } from '@adopted-ember-addons/torii/mixins/ui-service-mixin';
 import { module, test } from 'qunit';
 
 module('Unit | Service | Popup', function (hooks) {

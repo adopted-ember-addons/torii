@@ -1,6 +1,6 @@
 /* eslint-disable ember/no-new-mixins */
 import Mixin from '@ember/object/mixin';
-import { getConfiguration } from 'torii/configuration';
+import { getConfiguration } from '@adopted-ember-addons/torii/configuration';
 import { getOwner } from '@ember/application';
 
 export default Mixin.create({

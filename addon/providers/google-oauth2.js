@@ -4,8 +4,8 @@
  * using the OAuth2 authorization flow in a popup window.
  */
 
-import Oauth2 from 'torii/providers/oauth2-code';
-import { configurable } from 'torii/configuration';
+import Oauth2 from '@adopted-ember-addons/torii/providers/oauth2-code';
+import { configurable } from '@adopted-ember-addons/torii/configuration';
 
 var GoogleOauth2 = Oauth2.extend({
   name: 'google-oauth2',
