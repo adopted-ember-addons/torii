@@ -144,7 +144,7 @@ export default class LoginRoute extends Route {
 
 ```JavaScript
 // app/torii-adapters/application.js
-export default class ApplicationAdapter {
+export default class ApplicationAdapter extends EmberObject {
   open(authentication){
     var authorizationCode = authentication.authorizationCode;
     return new Ember.RSVP.Promise(function(resolve, reject){
@@ -230,8 +230,8 @@ export default class ApplicationRoute extends Route {
 
 ```JavaScript
 // app/torii-adapters/application.js
-export default Ember.Object.extend({
-  open: function(authentication){
+export default class ApplicationAdapter extends EmberObject {
+  open(authentication){
     var authorizationCode = authentication.authorizationCode;
     return new Ember.RSVP.Promise(function(resolve, reject){
       Ember.$.ajax({
@@ -250,7 +250,7 @@ export default Ember.Object.extend({
       };
     });
   }
-});
+};
 ```
 
 The session will automatically be populated if the user is logged in, otherwise the user will be redirected to the login page.
@@ -614,7 +614,7 @@ authorizations. An example application adapter with an `open` hook:
 ```JavaScript
 // app/torii-adapters/application.js
 //
-export default class ApplicationAdapter {
+export default class ApplicationAdapter extends EmberObject {
   @service store; // inject the ember-data store
 
   // The authorization argument passed in to `session.open` here is
