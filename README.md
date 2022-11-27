@@ -614,7 +614,7 @@ authorizations. An example application adapter with an `open` hook:
 ```JavaScript
 // app/torii-adapters/application.js
 //
-export default class Application {
+export default class ApplicationAdapter {
   @service store; // inject the ember-data store
 
   // The authorization argument passed in to `session.open` here is
