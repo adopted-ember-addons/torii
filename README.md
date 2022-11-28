@@ -67,6 +67,7 @@ explicitly injected into routes:
 export default class PostRoute extends Route {
   @service torii;
 
+  @action
   signInToComment(){
     var controller = this.controllerFor('post');
     // The provider name is passed to `open`
