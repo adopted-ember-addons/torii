@@ -460,7 +460,7 @@ A minimal provider:
 
 ```JavaScript
 // app/torii-providers/geocities.js
-export default class Geocities {
+export default class GeocitiesProvider extends EmberObject {
   // Create a new authorization.
   // When your code calls `this.torii.open('geocities', options)`,
   // the `options` will be passed to this provider's `open` method.
@@ -484,7 +484,7 @@ the consumer. An example provider called 'geocities':
 
 ```JavaScript
 // app/torii-providers/geocities.js
-export default class Geocities {
+export default class GeocitiesProvider extends EmberObject {
   // credentials as passed from torii.open
   open(credentials){
     return new Ember.RSVP.Promise(function(resolve, reject){
