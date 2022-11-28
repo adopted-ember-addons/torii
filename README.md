@@ -68,7 +68,7 @@ export default class PostRoute extends Route {
   @service torii;
 
   @action
-  signInToComment(){
+  signInToComment() {
     var controller = this.controllerFor('post');
     // The provider name is passed to `open`
     this.torii.open('facebook-connect').then(function(authorization){
@@ -130,7 +130,7 @@ export default class LoginRoute extends Route {
   @service session;
 
   @action
-  signInViaFacebook(){
+  signInViaFacebook() {
     var route = this,
         controller = this.controllerFor('login');
     // The provider name is passed to `open`
@@ -140,13 +140,13 @@ export default class LoginRoute extends Route {
       controller.set('error', 'Could not sign you in: '+error.message);
     });
   }
-});
+}
 ```
 
 ```JavaScript
 // app/torii-adapters/application.js
 export default class ApplicationAdapter extends EmberObject {
-  open(authentication){
+  open(authentication) {
     var authorizationCode = authentication.authorizationCode;
     return new Ember.RSVP.Promise(function(resolve, reject){
       Ember.$.ajax({
@@ -165,7 +165,7 @@ export default class ApplicationAdapter extends EmberObject {
       };
     });
   }
-};
+}
 ```
 
 ```
@@ -223,16 +223,16 @@ Router.map(function(){
 // app/routes/application.js
 export default class ApplicationRoute extends Route {
   @action
-  accessDenied: function() {
+  accessDenied() {
     this.transitionTo('login');
   }
-};
+}
 ```
 
 ```JavaScript
 // app/torii-adapters/application.js
 export default class ApplicationAdapter extends EmberObject {
-  open(authentication){
+  open(authentication) {
     var authorizationCode = authentication.authorizationCode;
     return new Ember.RSVP.Promise(function(resolve, reject){
       Ember.$.ajax({
@@ -251,7 +251,7 @@ export default class ApplicationAdapter extends EmberObject {
       };
     });
   }
-};
+}
 ```
 
 The session will automatically be populated if the user is logged in, otherwise the user will be redirected to the login page.
@@ -470,7 +470,7 @@ export default class Geocities {
       // resolve with an authorization object
     });
   }
-);
+}
 ```
 
 Provider hooks should return a promise resolving with an authorization
@@ -484,7 +484,7 @@ the consumer. An example provider called 'geocities':
 
 ```JavaScript
 // app/torii-providers/geocities.js
-export default class Geocities ({
+export default class Geocities {
   // credentials as passed from torii.open
   open(credentials){
     return new Ember.RSVP.Promise(function(resolve, reject){
@@ -500,7 +500,7 @@ export default class Geocities ({
       );
     });
   }
-};
+}
 ```
 
 ```JavaScript
@@ -509,7 +509,7 @@ export default class ApplicationRoute extends Route {
   @service torii;
 
   @action
-  openGeocities(username, password){
+  openGeocities(username, password) {
     var route = this;
     var providerName = 'geocities';
 
@@ -520,12 +520,12 @@ export default class ApplicationRoute extends Route {
       password: password
     };
 
-    this.torii.open(providerName, options).then(function(authorization){
+    this.torii.open(providerName, options).then(function(authorization) {
       // authorization as returned by the provider
       route.somethingWithGeocitiesToken(authorization.sessionToken);
     });
   }
-};
+}
 ```
 
 The cornerstone of many Torii providers is the `popup` object, which is injected
@@ -623,13 +623,13 @@ export default class ApplicationAdapter extends EmberObject {
   open(authorization){
     var userId = authorization.user;
 
-    return this.store.find('user', userId).then(function(user){
+    return this.store.find('user', userId).then(function(user) {
       return {
         currentUser: user
       };
     });
   }
-};
+}
 ```
 
 The object containing the `currentUser` is merged onto the session. Because the
