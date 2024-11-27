@@ -48,7 +48,7 @@ module(
       });
 
       const provider = Provider.create();
-      assert.equal(
+      assert.strictEqual(
         provider.buildUrl(),
         'http://example.com?response_type=token&client_id=dummyKey&redirect_uri=http%3A%2F%2Ffoo&state=' +
           provider.get('state'),
@@ -68,7 +68,7 @@ module(
 
       const provider = Provider.create();
 
-      assert.equal(
+      assert.strictEqual(
         provider.buildUrl(),
         'http://example.com?response_type=token&client_id=dummyKey&redirect_uri=http%3A%2F%2Ffoo&state=' +
           provider.get('state') +
@@ -99,7 +99,7 @@ module(
         .catch(function (e) {
           assert.ok(true, 'failed');
           const message = e.toString().split('\n')[0];
-          assert.equal(
+          assert.strictEqual(
             message,
             'Error: The response from the provider is missing these required response params: access_token'
           );

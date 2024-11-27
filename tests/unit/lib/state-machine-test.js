@@ -16,13 +16,13 @@ module('Unit | Lib | State Machine', function (/*hooks*/) {
       },
     });
 
-    assert.equal(sm.currentStateName, 'initial');
-    assert.equal(sm.state.foo, 'bar');
+    assert.strictEqual(sm.currentStateName, 'initial');
+    assert.strictEqual(sm.state.foo, 'bar');
     assert.ok(!sm.state.baz, 'has no baz state when initial');
 
     sm.transitionTo('started');
-    assert.equal(sm.currentStateName, 'started');
-    assert.equal(sm.state.baz, 'blah');
+    assert.strictEqual(sm.currentStateName, 'started');
+    assert.strictEqual(sm.state.baz, 'blah');
     assert.ok(!sm.state.foo, 'has no foo state when started');
   });
 });

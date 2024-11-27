@@ -37,7 +37,7 @@ module('Acceptance | Testing Helper', function (hooks) {
 
     let session = this.owner.lookup('service:session');
 
-    assert.equal(
+    assert.strictEqual(
       session.get('id'),
       42,
       'session contains the correct currentUser'

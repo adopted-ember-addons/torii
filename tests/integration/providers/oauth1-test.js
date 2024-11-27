@@ -29,7 +29,7 @@ module('Integration | Provider | Oauth1', function (hooks) {
       async open(url) {
         const result = super.open(...arguments);
 
-        assert.equal(url, requestTokenUri, 'opens with requestTokenUri');
+        assert.strictEqual(url, requestTokenUri, 'opens with requestTokenUri');
 
         return result;
       }
