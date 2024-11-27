@@ -1,6 +1,6 @@
 {
   "name": "torii",
-  "version": "1.0.0-beta.2",
+  "version": "1.0.0-beta.3",
   "description": "A set of clean abstractions for authentication in Ember.js",
   "keywords": [
     "authentication",
@@ -95,7 +95,7 @@
     "webpack": "5"
   },
   "engines": {
-    "node": "12.* || 14.* || >= 16"
+    "node": ">= 16"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org"
