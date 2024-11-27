@@ -57,7 +57,7 @@
     "ember-cli-htmlbars": "^6.3.0"
   },
   "peerDependencies": {
-    "@babel/core": "^7.13.0 || ^8.0.0-0"
+    "@babel/core": "^7.13.0"
   },
   "resolutions": {
     "isbinaryfile": "5.0.0"
