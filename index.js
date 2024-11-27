@@ -3,6 +3,9 @@
 
 module.exports = {
   name: require('./package').name,
+  'ember-cli-babel': {
+    includeExternalHelpers: true,
+  },
   included: function (app) {
     var hostApp = this._findApp(app);
     var toriiConfig = hostApp.project.config(app.env)['torii'];
