@@ -163,7 +163,7 @@ module('Unit | Routing | Authenticated Route Mixin', function (hooks) {
       })
       .then(function () {
         assert.ok(fetchCalled, 'fetch default provider was called');
-        assert.equal(
+        assert.strictEqual(
           sentActionName,
           'accessDenied',
           'accessDenied action was sent'

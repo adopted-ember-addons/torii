@@ -59,9 +59,9 @@ module('Unit | Service | Popup', function (hooks) {
 
     window.open = function (url, name) {
       assert.ok(true, 'calls window.open');
-      assert.equal(url, expectedUrl, 'opens with expected url');
+      assert.strictEqual(url, expectedUrl, 'opens with expected url');
 
-      assert.equal(
+      assert.strictEqual(
         PopupIdSerializer.serialize(popupId),
         localStorage.getItem(CURRENT_REQUEST_KEY),
         'adds the key to the current request item'
@@ -76,18 +76,18 @@ module('Unit | Service | Popup', function (hooks) {
       .then(
         function (data) {
           assert.ok(true, 'resolves promise');
-          assert.equal(
+          assert.strictEqual(
             popupId,
             PopupIdSerializer.deserialize(mockWindow.name),
             "sets the window's name properly"
           );
           assert.deepEqual(data, { code: 'fr' }, 'resolves with expected data');
-          assert.equal(
+          assert.strictEqual(
             null,
             localStorage.getItem(CURRENT_REQUEST_KEY),
             'removes the key from local storage'
           );
-          assert.equal(
+          assert.strictEqual(
             null,
             localStorage.getItem(PopupIdSerializer.serialize(popupId)),
             'removes the key from local storage'
