@@ -62,7 +62,7 @@ module('Unit | Configuration', function (hooks) {
 
     const value = testable.get('required');
 
-    assert.equal(value, 'item val');
+    assert.strictEqual(value, 'item val');
   });
 
   test('it should read default values', function (assert) {
@@ -74,7 +74,7 @@ module('Unit | Configuration', function (hooks) {
 
     const value = testable.get('defaulted');
 
-    assert.equal(value, 'email');
+    assert.strictEqual(value, 'email');
   });
 
   test('it should override default values', function (assert) {
@@ -88,12 +88,12 @@ module('Unit | Configuration', function (hooks) {
 
     const value = testable.get('defaulted');
 
-    assert.equal(value, 'baz');
+    assert.strictEqual(value, 'baz');
   });
 
   test('it read default values from a function', function (assert) {
     const value = testable.get('defaultedFunction');
 
-    assert.equal(value, 'found-via-get');
+    assert.strictEqual(value, 'found-via-get');
   });
 });

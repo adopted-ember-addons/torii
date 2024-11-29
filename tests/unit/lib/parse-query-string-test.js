@@ -9,7 +9,7 @@ module('Unit | Lib | ParseQueryString', function (/*hooks*/) {
     const result = parser.parse();
 
     assert.ok(result.code, 'gets code');
-    assert.equal(result.code, 'abcdef', 'gets correct code');
+    assert.strictEqual(result.code, 'abcdef', 'gets correct code');
   });
 
   test('parses keys without the hash fragment', function (assert) {
@@ -18,7 +18,7 @@ module('Unit | Lib | ParseQueryString', function (/*hooks*/) {
     const result = parser.parse();
 
     assert.ok(result.code, 'gets code');
-    assert.equal(result.code, 'abcdef', 'gets correct code');
+    assert.strictEqual(result.code, 'abcdef', 'gets correct code');
   });
 
   test('parses multiple keys', function (assert) {
@@ -32,7 +32,7 @@ module('Unit | Lib | ParseQueryString', function (/*hooks*/) {
 
     assert.ok(result.oauth_token, 'gets token');
     assert.ok(result.oauth_verifier, 'gets verifier');
-    assert.equal(result.oauth_token, 'xxx', 'gets correct token');
-    assert.equal(result.oauth_verifier, 'yyy', 'gets correct verifier');
+    assert.strictEqual(result.oauth_token, 'xxx', 'gets correct token');
+    assert.strictEqual(result.oauth_verifier, 'yyy', 'gets correct verifier');
   });
 });

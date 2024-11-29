@@ -23,7 +23,7 @@ module('Unit | RedirectHandler', function (/*hooks*/) {
 
     mockWindow.localStorage.setItem = function (key, val) {
       if (key === keyForReturn) {
-        assert.equal(val, url, 'url is set for parent window');
+        assert.strictEqual(val, url, 'url is set for parent window');
       }
     };
 

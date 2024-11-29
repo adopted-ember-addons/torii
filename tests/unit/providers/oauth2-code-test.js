@@ -60,7 +60,7 @@ module(
       const provider = Provider.create();
       const state = provider.get('state');
 
-      assert.equal(
+      assert.strictEqual(
         provider.buildUrl(),
         'http://example.com?response_type=code&client_id=dummyKey&redirect_uri=http%3A%2F%2Ffoo&state=' +
           state,
@@ -81,7 +81,7 @@ module(
       const provider = Provider.create();
       const state = provider.get('state');
 
-      assert.equal(
+      assert.strictEqual(
         provider.buildUrl(),
         'http://example.com?response_type=code&client_id=dummyKey&redirect_uri=http%3A%2F%2Ffoo&state=' +
           state +
@@ -121,7 +121,7 @@ module(
         .catch(function (e) {
           assert.ok(true, 'failed');
           const message = e.toString().split('\n')[0];
-          assert.equal(
+          assert.strictEqual(
             message,
             'Error: The response from the provider is missing these required response params: authorization_code'
           );
@@ -182,7 +182,7 @@ module(
       const provider = Provider.create();
       const state = provider.get('state');
 
-      assert.equal(
+      assert.strictEqual(
         provider.get('state'),
         state,
         'random state value is cached'
@@ -203,7 +203,7 @@ module(
       const provider = Provider.create();
       const state = provider.get('state');
 
-      assert.equal(
+      assert.strictEqual(
         state,
         'insecure-fixed-state',
         'specified state property is set'
@@ -238,7 +238,7 @@ module(
       const tokenProvider = MyProvider.create();
 
       return tokenProvider.open().then(function (res) {
-        assert.equal(
+        assert.strictEqual(
           res.authorizationCode,
           'test==',
           'authorizationCode decoded'

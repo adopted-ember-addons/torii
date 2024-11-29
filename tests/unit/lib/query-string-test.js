@@ -33,7 +33,7 @@ module('Unit | Lib | QueryString', function (hooks) {
       requiredParams: ['client_id'],
     });
 
-    assert.equal(
+    assert.strictEqual(
       qs.toString(),
       'client_id=' + clientId,
       'sets client_id from clientId property'
@@ -56,7 +56,7 @@ module('Unit | Lib | QueryString', function (hooks) {
       requiredParams: ['client_id', 'response_type'],
     });
 
-    assert.equal(
+    assert.strictEqual(
       qs.toString(),
       'client_id=' + clientId + '&response_type=' + responseType,
       'joins client_id and response_type'
@@ -69,7 +69,7 @@ module('Unit | Lib | QueryString', function (hooks) {
       requiredParams: ['redirect_uri'],
     });
 
-    assert.equal(
+    assert.strictEqual(
       qs.toString(),
       'redirect_uri=http%3A%2F%2Flocalhost.dev%3A3000%2Fxyz%2Fpdq',
       'encodes uri components'
@@ -113,7 +113,7 @@ module('Unit | Lib | QueryString', function (hooks) {
       optionalParams: ['nonexistent_property'],
     });
 
-    assert.equal(
+    assert.strictEqual(
       qs.toString(),
       '',
       'empty query string with nonexistent optional param'
@@ -127,7 +127,7 @@ module('Unit | Lib | QueryString', function (hooks) {
       optionalParams: ['optional_property'],
     });
 
-    assert.equal(
+    assert.strictEqual(
       qs.toString(),
       'optional_property=' + optionalProperty,
       'optional_property is populated when the value is there'
@@ -140,7 +140,7 @@ module('Unit | Lib | QueryString', function (hooks) {
       requiredParams: ['false_prop'],
     });
 
-    assert.equal(
+    assert.strictEqual(
       qs.toString(),
       'false_prop=false',
       'false_prop is in url even when false'
@@ -153,7 +153,7 @@ module('Unit | Lib | QueryString', function (hooks) {
       requiredParams: ['client_id', 'client_id'],
     });
 
-    assert.equal(
+    assert.strictEqual(
       qs.toString(),
       'client_id=' + clientId,
       'only includes client_id once'
@@ -167,7 +167,7 @@ module('Unit | Lib | QueryString', function (hooks) {
       optionalParams: ['client_id', 'client_id'],
     });
 
-    assert.equal(
+    assert.strictEqual(
       qs.toString(),
       'client_id=' + clientId,
       'only includes client_id once'

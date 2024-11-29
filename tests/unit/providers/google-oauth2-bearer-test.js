@@ -43,7 +43,11 @@ module('Unit | Provider | GoogleAuth2BearerProvider', function (hooks) {
       provider.get('state') +
       '&scope=email';
 
-    assert.equal(provider.buildUrl(), expectedUrl, 'generates the correct URL');
+    assert.strictEqual(
+      provider.buildUrl(),
+      expectedUrl,
+      'generates the correct URL'
+    );
   });
 
   test('Provider generates a URL with optional parameters', function (assert) {
@@ -72,6 +76,10 @@ module('Unit | Provider | GoogleAuth2BearerProvider', function (hooks) {
       encodeURIComponent('http://some-url.com') +
       '&hd=google.com';
 
-    assert.equal(provider.buildUrl(), expectedUrl, 'generates the correct URL');
+    assert.strictEqual(
+      provider.buildUrl(),
+      expectedUrl,
+      'generates the correct URL'
+    );
   });
 });

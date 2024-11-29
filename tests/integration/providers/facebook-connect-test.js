@@ -67,7 +67,7 @@ module('Integration | Provider | Facebook Connect', function (hooks) {
     const torii = this.owner.lookup('service:torii');
 
     return torii.open('facebook-connect').then(function (data) {
-      assert.equal('email', data.grantedScopes);
+      assert.strictEqual('email', data.grantedScopes);
     });
   });
 
@@ -81,7 +81,7 @@ module('Integration | Provider | Facebook Connect', function (hooks) {
     return torii
       .open('facebook-connect', { authType: 'rerequest' })
       .then(function (data) {
-        assert.equal(
+        assert.strictEqual(
           5678,
           data.expiresIn,
           'expriesIn extended when rerequest found'

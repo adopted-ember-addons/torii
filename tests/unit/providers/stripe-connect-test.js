@@ -51,7 +51,11 @@ module('Unit | Provider | StripeConnectProvider', function (hooks) {
       '&scope=read_write' +
       '&always_prompt=false';
 
-    assert.equal(provider.buildUrl(), expectedUrl, 'generates the correct URL');
+    assert.strictEqual(
+      provider.buildUrl(),
+      expectedUrl,
+      'generates the correct URL'
+    );
   });
 
   test('Provider generates a URL with optional parameters', function (assert) {
@@ -80,6 +84,10 @@ module('Unit | Provider | StripeConnectProvider', function (hooks) {
       '&stripe_landing=login' +
       '&always_prompt=true';
 
-    assert.equal(provider.buildUrl(), expectedUrl, 'generates the correct URL');
+    assert.strictEqual(
+      provider.buildUrl(),
+      expectedUrl,
+      'generates the correct URL'
+    );
   });
 });

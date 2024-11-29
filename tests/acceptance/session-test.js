@@ -140,7 +140,7 @@ module('Acceptance | Session', function (hooks) {
 
     return this.session.fetch('dummy-success', opts).then(
       function () {
-        assert.equal(
+        assert.strictEqual(
           adapterFetchCalledWith,
           opts,
           'options should be passed through to adapter'
@@ -226,7 +226,7 @@ module('Acceptance | Session', function (hooks) {
     };
 
     return this.session.close('dummy-success', opts).then(function () {
-      assert.equal(
+      assert.strictEqual(
         optionsCloseCalledWith,
         opts,
         'options should be passed through to adapter'

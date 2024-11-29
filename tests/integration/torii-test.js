@@ -20,7 +20,7 @@ module('Integration | Torii', function (hooks) {
     return torii.open('dummy-success', { name: 'dummy' }).then(
       function (authentication) {
         assert.ok(true, 'torii resolves an open promise');
-        assert.equal(
+        assert.strictEqual(
           authentication.name,
           'dummy',
           'resolves with an authentication object'

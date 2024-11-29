@@ -40,7 +40,7 @@ module(
         },
       });
 
-      assert.equal(
+      assert.strictEqual(
         provider.buildRequestTokenUrl(),
         'http://expectedUrl.com',
         'generates the correct URL'
