@@ -145,16 +145,21 @@ export default class LoginRoute extends Route {
 
 ```JavaScript
 // app/torii-adapters/application.js
+import EmberObject from '@ember/object';
+import { Promise } from 'rsvp';
+import $ from 'jquery';
+import { run } from 'ember/runloop';
+
 export default class ApplicationAdapter extends EmberObject {
   open(authentication) {
     var authorizationCode = authentication.authorizationCode;
-    return new Ember.RSVP.Promise(function(resolve, reject){
-      Ember.$.ajax({
+    return new Promise(function(resolve, reject){
+      $.ajax({
         url: 'api/session',
         data: { 'facebook-auth-code': authorizationCode },
         dataType: 'json',
-        success: Ember.run.bind(null, resolve),
-        error: Ember.run.bind(null, reject)
+        success: run.bind(null, resolve),
+        error: run.bind(null, reject)
       });
     }).then(function(user){
       // The returned object is merged onto the session (basically). Here
@@ -231,16 +236,21 @@ export default class ApplicationRoute extends Route {
 
 ```JavaScript
 // app/torii-adapters/application.js
+import EmberObject from '@ember/object';
+import { Promise } from 'rsvp';
+import $ from 'jquery';
+import { run } from 'ember/runloop';
+
 export default class ApplicationAdapter extends EmberObject {
   open(authentication) {
     var authorizationCode = authentication.authorizationCode;
-    return new Ember.RSVP.Promise(function(resolve, reject){
-      Ember.$.ajax({
+    return new Promise(function(resolve, reject){
+      $.ajax({
         url: 'api/session',
         data: { 'facebook-auth-code': authorizationCode },
         dataType: 'json',
-        success: Ember.run.bind(null, resolve),
-        error: Ember.run.bind(null, reject)
+        success: run.bind(null, resolve),
+        error: run.bind(null, reject)
       });
     }).then(function(user){
       // The returned object is merged onto the session (basically). Here
@@ -376,10 +386,10 @@ signIn() {
   // Set a value that will result in the placeholder component being
   // added to the DOM
   route.controller.set('signingIn',true);
-  // We need to user Ember.run.next to make sure that the placeholder
+  // We need to use run.schedule to make sure that the placeholder
   // component has been added to the DOM before session.open is called
-  Ember.run.schedule('afterRender', this, function(){
-    Ember.$('#signin-modal-back').one('click',function(){
+  run.schedule('afterRender', this, function(){
+    $('#signin-modal-back').one('click',function(){
       route.controller.set('signingIn',false);
     });
     this.session
@@ -460,13 +470,16 @@ A minimal provider:
 
 ```JavaScript
 // app/torii-providers/geocities.js
+import EmberObject from '@ember/object';
+import { Promise } from 'rsvp';
+
 export default class GeocitiesProvider extends EmberObject {
   // Create a new authorization.
   // When your code calls `this.torii.open('geocities', options)`,
   // the `options` will be passed to this provider's `open` method.
 
   open(options) {
-    return new Ember.RSVP.Promise(function(resolve, reject){
+    return new Promise(function(resolve, reject){
       // resolve with an authorization object
     });
   }
@@ -484,10 +497,14 @@ the consumer. An example provider called 'geocities':
 
 ```JavaScript
 // app/torii-providers/geocities.js
+import EmberObject from '@ember/object';
+import { Promise } from 'rsvp';
+import { bind } from '@ember/runloop';
+
 export default class GeocitiesProvider extends EmberObject {
   // credentials as passed from torii.open
   open(credentials){
-    return new Ember.RSVP.Promise(function(resolve, reject){
+    return new Promise(function(resolve, reject){
       exampleAsyncLogin(
         credentials.username,
         credentials.password,
@@ -495,7 +512,7 @@ export default class GeocitiesProvider extends EmberObject {
         // callback function:
         function(error, response) {
           // the promise is resolved with the authorization
-          Ember.run.bind(null, resolve, {sessionToken: response.token});
+          bind(null, resolve, {sessionToken: response.token});
         }
       );
     });
