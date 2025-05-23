@@ -24,7 +24,7 @@ we would be able to maintain a 2.x compatible version but this is currently not 
 v1.0.0 removes implicit injections as these are deprecated in Ember 3.x and removed in Ember 4.x. You must explicitly inject your
 session and torii services like so:
 
-```
+```JavaScript
 import Route from '@ember/routing/route';
 import AuthenticatedRouteMixin from 'torii/routing/authenticated-route-mixin';
 import { inject as service } from '@ember/service';
@@ -48,15 +48,15 @@ authorization is destroyed.
 
 A provider in Torii is anything a user can authenticate against. This could be an
 OAuth 2.0 endpoint, your own login mechanism, or an SDK like Facebook Connect.
-Authenticating against a **provider** is done via the `torii` property, which is injected
-into routes:
+Authenticating against a **provider** is done via the `torii` property, which must be
+explicitly injected into routes:
 
 ```hbs
 {{! app/templates/post.hbs }}
-{{#if hasFacebook}}
+{{#if this.hasFacebook}}
   {{partial "comment-form"}}
 {{else}}
-  <a href="#" {{action 'signInToComment'}}>
+  <a href="#" {{on "click" this.signInToComment}}>
     Sign in to comment
   </a>
 {{/if}}
@@ -64,19 +64,20 @@ into routes:
 
 ```JavaScript
 // app/routes/post.js
-export default Ember.Route.extend({
-  actions: {
-    signInToComment: function(){
-      var controller = this.controllerFor('post');
-      // The provider name is passed to `open`
-      this.get('torii').open('facebook-connect').then(function(authorization){
-        // FB.api is now available. authorization contains the UID and
-        // accessToken.
-        controller.set('hasFacebook', true);
-      });
-    }
+export default class PostRoute extends Route {
+  @service torii;
+
+  @action
+  signInToComment() {
+    var controller = this.controllerFor('post');
+    // The provider name is passed to `open`
+    this.torii.open('facebook-connect').then(function(authorization){
+      // FB.api is now available. authorization contains the UID and
+      // accessToken.
+      controller.set('hasFacebook', true);
+    });
   }
-});
+}
 ```
 
 ```
@@ -85,7 +86,7 @@ torii.open('facebook') -> #open hook on the facebook provider -> returned author
 
 ## Session Management
 
-Torii can perform **session management** via the `session` service, injected onto
+Torii can perform **session management** via the `session` service. This service must be injected explicitly into
 routes and controllers. You can activate *session management* by specifying `sessionServiceName` in your `config/environment.js` and providing an **adapter** which Torii will use to extract session information from a new opened authorization.
 
 This example uses Facebook's OAuth 2.0 API directly to fetch an authorization code.
@@ -97,7 +98,7 @@ module.exports = function(environment) {
   var ENV = {
     /* ... */
     torii: {
-      // a 'session' property will be injected on routes and controllers
+      // The name of your session service. This must be explicitly injected in routes and controllers
       sessionServiceName: 'session',
       providers: {
         'facebook-oauth2': {
@@ -113,11 +114,11 @@ module.exports = function(environment) {
 
 ```hbs
 {{! app/templates/login.hbs }}
-{{#if session.isWorking}}
+{{#if this.session.isWorking}}
   One sec while we get you signed in...
 {{else}}
   {{error}}
-  <a href="#" {{action 'signInViaFacebook'}}>
+  <a href="#" {{on "click" this.signInViaFacebook}}>
     Sign In with Facebook
   </a>
 {{/if}}
@@ -125,34 +126,40 @@ module.exports = function(environment) {
 
 ```JavaScript
 // app/routes/login.js
-export default Ember.Route.extend({
-  actions: {
-    signInViaFacebook: function(){
-      var route = this,
-          controller = this.controllerFor('login');
-      // The provider name is passed to `open`
-      this.get('session').open('facebook-oauth2').then(function(){
-        route.transitionTo('dashboard');
-      }, function(error){
-        controller.set('error', 'Could not sign you in: '+error.message);
-      });
-    }
+export default class LoginRoute extends Route {
+  @service session;
+
+  @action
+  signInViaFacebook() {
+    var route = this,
+        controller = this.controllerFor('login');
+    // The provider name is passed to `open`
+    this.session.open('facebook-oauth2').then(function(){
+      route.transitionTo('dashboard');
+    }, function(error){
+      controller.set('error', 'Could not sign you in: '+error.message);
+    });
   }
-});
+}
 ```
 
 ```JavaScript
 // app/torii-adapters/application.js
-export default Ember.Object.extend({
-  open: function(authentication){
+import EmberObject from '@ember/object';
+import { Promise } from 'rsvp';
+import $ from 'jquery';
+import { run } from 'ember/runloop';
+
+export default class ApplicationAdapter extends EmberObject {
+  open(authentication) {
     var authorizationCode = authentication.authorizationCode;
-    return new Ember.RSVP.Promise(function(resolve, reject){
-      Ember.$.ajax({
+    return new Promise(function(resolve, reject){
+      $.ajax({
         url: 'api/session',
         data: { 'facebook-auth-code': authorizationCode },
         dataType: 'json',
-        success: Ember.run.bind(null, resolve),
-        error: Ember.run.bind(null, reject)
+        success: run.bind(null, resolve),
+        error: run.bind(null, reject)
       });
     }).then(function(user){
       // The returned object is merged onto the session (basically). Here
@@ -163,7 +170,7 @@ export default Ember.Object.extend({
       };
     });
   }
-});
+}
 ```
 
 ```
@@ -195,7 +202,7 @@ module.exports = function(environment) {
   var ENV = {
     /* ... */
     torii: {
-      // a 'session' property will be injected on routes and controllers
+      // The name of your session service. This must be explicitly injected in routes and controllers
       sessionServiceName: 'session',
       providers: {
         'facebook-oauth2': {
@@ -219,27 +226,31 @@ Router.map(function(){
 
 ```JavaScript
 // app/routes/application.js
-export default Ember.Route.extend({
-  actions: {
-    accessDenied: function() {
-      this.transitionTo('login');
-    }
+export default class ApplicationRoute extends Route {
+  @action
+  accessDenied() {
+    this.transitionTo('login');
   }
-});
+}
 ```
 
 ```JavaScript
 // app/torii-adapters/application.js
-export default Ember.Object.extend({
-  open: function(authentication){
+import EmberObject from '@ember/object';
+import { Promise } from 'rsvp';
+import $ from 'jquery';
+import { run } from 'ember/runloop';
+
+export default class ApplicationAdapter extends EmberObject {
+  open(authentication) {
     var authorizationCode = authentication.authorizationCode;
-    return new Ember.RSVP.Promise(function(resolve, reject){
-      Ember.$.ajax({
+    return new Promise(function(resolve, reject){
+      $.ajax({
         url: 'api/session',
         data: { 'facebook-auth-code': authorizationCode },
         dataType: 'json',
-        success: Ember.run.bind(null, resolve),
-        error: Ember.run.bind(null, reject)
+        success: run.bind(null, resolve),
+        error: run.bind(null, reject)
       });
     }).then(function(user){
       // The returned object is merged onto the session (basically). Here
@@ -250,7 +261,7 @@ export default Ember.Object.extend({
       };
     });
   }
-});
+}
 ```
 
 The session will automatically be populated if the user is logged in, otherwise the user will be redirected to the login page.
@@ -303,9 +314,10 @@ module.exports = function(environment) {
 ```
 
 With those values, we can authenticate the user against Facebook Connect
-via the `torii` property injected onto _routes_, or the `session` property
-injected onto routes and controllers (using the session management feature
-will require you to write an adapter for your application – see notes on session management below).
+via the `torii` property which must be explicitly injected onto _routes_,
+or the `session` property which similarly must be explcitly injected onto
+routes and controllers (using the session management feature will require you
+to write an adapter for your application – see notes on session management below).
 
 ## Using an iframe instead of a popup
 
@@ -341,7 +353,7 @@ module.exports = function(environment) {
   var ENV = {
     /* ... */
     torii: {
-      // a 'session' property will be injected on routes and controllers
+      // The name of your session service. This must be explicitly injected in routes and controllers
       sessionServiceName: 'session',
       providers: {
         'mycorp-oauth2': {
@@ -368,18 +380,19 @@ For instance, in `routes/application.js` you might have the following
 `signIn` action:
 
 ```JavaScript
-signIn: function() {
+@action
+signIn() {
   var route = this;
   // Set a value that will result in the placeholder component being
   // added to the DOM
   route.controller.set('signingIn',true);
-  // We need to user Ember.run.next to make sure that the placeholder
+  // We need to use run.schedule to make sure that the placeholder
   // component has been added to the DOM before session.open is called
-  Ember.run.schedule('afterRender', this, function(){
-    Ember.$('#signin-modal-back').one('click',function(){
+  run.schedule('afterRender', this, function(){
+    $('#signin-modal-back').one('click',function(){
       route.controller.set('signingIn',false);
     });
-    this.get("session")
+    this.session
       .open("clickfunnels-oauth2")
       .then(function(){
         route.controller.set('signingIn',false);
@@ -391,7 +404,7 @@ signIn: function() {
 Then in `templates/application.hbs` you might have:
 
 ```handlebars
-{{#if signingIn}}
+{{#if this.signingIn}}
 <div id="signin-modal-back">
   <div id="signin-modal-frame">
     <div id="signin-modal-content">
@@ -457,17 +470,20 @@ A minimal provider:
 
 ```JavaScript
 // app/torii-providers/geocities.js
-export default Ember.Object.extend({
+import EmberObject from '@ember/object';
+import { Promise } from 'rsvp';
+
+export default class GeocitiesProvider extends EmberObject {
   // Create a new authorization.
-  // When your code calls `this.get('torii').open('geocities', options)`,
+  // When your code calls `this.torii.open('geocities', options)`,
   // the `options` will be passed to this provider's `open` method.
 
-  open: function(options) {
-    return new Ember.RSVP.Promise(function(resolve, reject){
+  open(options) {
+    return new Promise(function(resolve, reject){
       // resolve with an authorization object
     });
   }
-});
+}
 ```
 
 Provider hooks should return a promise resolving with an authorization
@@ -481,10 +497,14 @@ the consumer. An example provider called 'geocities':
 
 ```JavaScript
 // app/torii-providers/geocities.js
-export default Ember.Object.extend({
+import EmberObject from '@ember/object';
+import { Promise } from 'rsvp';
+import { bind } from '@ember/runloop';
+
+export default class GeocitiesProvider extends EmberObject {
   // credentials as passed from torii.open
-  open: function(credentials){
-    return new Ember.RSVP.Promise(function(resolve, reject){
+  open(credentials){
+    return new Promise(function(resolve, reject){
       exampleAsyncLogin(
         credentials.username,
         credentials.password,
@@ -492,36 +512,37 @@ export default Ember.Object.extend({
         // callback function:
         function(error, response) {
           // the promise is resolved with the authorization
-          Ember.run.bind(null, resolve, {sessionToken: response.token});
+          bind(null, resolve, {sessionToken: response.token});
         }
       );
     });
   }
-});
+}
 ```
 
 ```JavaScript
 // app/routes/application.js
-export default Ember.Route.extend({
-  actions: {
-    openGeocities: function(username, password){
-      var route = this;
-      var providerName = 'geocities';
+export default class ApplicationRoute extends Route {
+  @service torii;
 
-      // The options to `this.get('torii').open(providerName, options)` will
-      // be passed to the provider's `open` method.
-      var options = {
-        username: username,
-        password: password
-      };
+  @action
+  openGeocities(username, password) {
+    var route = this;
+    var providerName = 'geocities';
 
-      this.get('torii').open(providerName, options).then(function(authorization){
-        // authorization as returned by the provider
-        route.somethingWithGeocitiesToken(authorization.sessionToken);
-      });
-    }
+    // The options to `this.torii.open(providerName, options)` will
+    // be passed to the provider's `open` method.
+    var options = {
+      username: username,
+      password: password
+    };
+
+    this.torii.open(providerName, options).then(function(authorization) {
+      // authorization as returned by the provider
+      route.somethingWithGeocitiesToken(authorization.sessionToken);
+    });
   }
-});
+}
 ```
 
 The cornerstone of many Torii providers is the `popup` object, which is injected
@@ -566,7 +587,7 @@ To add a session service in Ember-CLI, simply:
 // config/environment.js
 /* ... */
     torii: {
-      // a 'session' property will be injected on routes and controllers
+    // The name of your session service. This must be explicitly injected in routes and controllers
       sessionServiceName: 'session'
     }
 /* ... */
@@ -577,7 +598,7 @@ Or to do the same in a global configuration
 ```JavaScript
 window.ENV = window.ENV || {};
 window.ENV['torii'] = {
-  sessionServiceName: 'session', // a 'session' property will be injected on routes and controllers
+  sessionServiceName: 'session', // The name of your session service. This must be explicitly injected in routes and controllers
 
   // ... additional configuration for providers, etc
 };
@@ -611,21 +632,21 @@ authorizations. An example application adapter with an `open` hook:
 ```JavaScript
 // app/torii-adapters/application.js
 //
-export default Ember.Object.extend({
-  store: Ember.inject.service(), // inject the ember-data store
+export default class ApplicationAdapter extends EmberObject {
+  @service store; // inject the ember-data store
 
   // The authorization argument passed in to `session.open` here is
   // the result of the `torii.open(providerName)` promise
-  open: function(authorization){
-    var userId = authorization.user,
-        store  = this.get('store');
-    return store.find('user', userId).then(function(user){
+  open(authorization){
+    var userId = authorization.user;
+
+    return this.store.find('user', userId).then(function(user) {
       return {
         currentUser: user
       };
     });
   }
-});
+}
 ```
 
 The object containing the `currentUser` is merged onto the session. Because the
@@ -692,7 +713,7 @@ There are a number of ember-cli addons that allow you to use Torii with other pr
 
 ## Running the tests locally
 
-  * Clone the repo `git clone git@github.com:Vestorly/torii.git`, `cd torii/`
+  * Clone the repo `git clone git@github.com:adopted-ember-addons/torii.git`, `cd torii/`
   * `yarn install`
   * `npm test` for tests.
   * Or, to run tests in the browser:
