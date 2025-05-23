@@ -2,7 +2,7 @@
 
 We've moved torii to [adopted-ember-addons](https://github.com/adopted-ember-addons) to reactivate the project and make it compatible with current versions of Ember
 
-We will shortly release a 1.0.0 that will be compatible with Ember 3.24 and upwards but will not care for older versions.
+We will shortly release a 1.0.0 that will be compatible with Ember 3.28 and upwards but will not care for older versions.
 
 For safety reasons we have backed up the state before starting this work to the 0.10.x branch, so technically, if necessary,
 we would be able to maintain a 2.x compatible version but this is currently not a goal of this particular fork.
@@ -15,9 +15,9 @@ we would be able to maintain a 2.x compatible version but this is currently not 
 |-----------|---------|--------------------|
 | v0.3.X and before    | <= 1.13 | <= 1.0.0.beta19.2  |
 | v0.4.X and after     | >= 1.12 | >= 1.0.0.beta19.2  |
-| v1.0.0 and after     | >= 3.24 (planned) | >= 3.24 |
+| v1.0.0 and after     | >= 3.28 (planned) | >= 3.28 |
 
-**tl;dr;** Use torii 0.3.X if your application is using Ember 1.11 or older, Use the latest 1.0.x version when on Ember 3.24 or later.
+**tl;dr;** Use torii 0.3.X if your application is using Ember 1.11 or older, Use the latest 1.0.x version when on Ember 3.28 or later.
 
 # Upgrading to 1.0.0
 

@@ -41,7 +41,11 @@ module('Unit | Provider | AzureAdOAuth2Provider', function (hooks) {
       provider.get('state') +
       '&api-version=1.0';
 
-    assert.equal(provider.buildUrl(), expectedUrl, 'generates the correct URL');
+    assert.strictEqual(
+      provider.buildUrl(),
+      expectedUrl,
+      'generates the correct URL'
+    );
   });
 
   test('Provider generates a URL with required config including the tennantId', function (assert) {
@@ -66,7 +70,11 @@ module('Unit | Provider | AzureAdOAuth2Provider', function (hooks) {
       provider.get('state') +
       '&api-version=1.0';
 
-    assert.equal(provider.buildUrl(), expectedUrl, 'generates the correct URL');
+    assert.strictEqual(
+      provider.buildUrl(),
+      expectedUrl,
+      'generates the correct URL'
+    );
 
     assert.ok(provider.get('baseUrl').indexOf('very-long-guid') !== -1);
   });
@@ -97,6 +105,10 @@ module('Unit | Provider | AzureAdOAuth2Provider', function (hooks) {
       '&scope=openid%20email' +
       '&response_mode=query';
 
-    assert.equal(provider.buildUrl(), expectedUrl, 'generates the correct URL');
+    assert.strictEqual(
+      provider.buildUrl(),
+      expectedUrl,
+      'generates the correct URL'
+    );
   });
 });

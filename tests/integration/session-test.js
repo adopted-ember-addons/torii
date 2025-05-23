@@ -126,7 +126,11 @@ module('Integration | Session (close) ', function (hooks) {
       function (error) {
         assert.ok(!session.get('isWorking'), 'isWorking is false');
         assert.ok(!session.get('isAuthenticated'), 'isAuthenticated is true');
-        assert.equal(session.get('errorMessage'), error, 'error is present');
+        assert.strictEqual(
+          session.get('errorMessage'),
+          error,
+          'error is present'
+        );
       }
     );
   });
