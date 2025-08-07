@@ -105,6 +105,7 @@
   "engines": {
     "node": "20.* || 22.* || >= 24"
   },
+  "packageManager": "pnpm@10.14.0",
   "publishConfig": {
     "registry": "https://registry.npmjs.org"
   },
