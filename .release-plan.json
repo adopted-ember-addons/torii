@@ -1,0 +1,26 @@
+{
+  "solution": {
+    "torii": {
+      "impact": "major",
+      "oldVersion": "1.0.0-beta.3",
+      "newVersion": "1.0.0",
+      "tagName": "latest",
+      "constraints": [
+        {
+          "impact": "major",
+          "reason": "Appears in changelog section :boom: Breaking Change"
+        },
+        {
+          "impact": "patch",
+          "reason": "Appears in changelog section :memo: Documentation"
+        },
+        {
+          "impact": "patch",
+          "reason": "Appears in changelog section :house: Internal"
+        }
+      ],
+      "pkgJSONPath": "./package.json"
+    }
+  },
+  "description": "## Release (2025-08-07)\n\n* torii 1.0.0 (major)\n\n#### :boom: Breaking Change\n* `torii`\n  * [#42](https://github.com/adopted-ember-addons/torii/pull/42) Add a dependency on `@ember/string`, require ember-auto-import@v2 ([@jagthedrummer](https://github.com/jagthedrummer))\n  * [#43](https://github.com/adopted-ember-addons/torii/pull/43) Update node to current LTS versions, dropping Node < 20 ([@jagthedrummer](https://github.com/jagthedrummer))\n  * [#40](https://github.com/adopted-ember-addons/torii/pull/40) Update addon blueprint to 4.8 ([@Gaurav0](https://github.com/Gaurav0))\n\n#### :memo: Documentation\n* `torii`\n  * [#41](https://github.com/adopted-ember-addons/torii/pull/41) Readme fixes ([@Gaurav0](https://github.com/Gaurav0))\n\n#### :house: Internal\n* `torii`\n  * [#45](https://github.com/adopted-ember-addons/torii/pull/45) setup release-plan ([@NullVoxPopuli](https://github.com/NullVoxPopuli))\n  * [#44](https://github.com/adopted-ember-addons/torii/pull/44) Switch from yarn to pnpm@10 ([@jagthedrummer](https://github.com/jagthedrummer))\n\n#### Committers: 3\n- Gaurav Munjal ([@Gaurav0](https://github.com/Gaurav0))\n- Jeremy Green ([@jagthedrummer](https://github.com/jagthedrummer))\n- [@NullVoxPopuli](https://github.com/NullVoxPopuli)\n"
+}
