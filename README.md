@@ -714,10 +714,10 @@ There are a number of ember-cli addons that allow you to use Torii with other pr
 ## Running the tests locally
 
   * Clone the repo `git clone git@github.com:adopted-ember-addons/torii.git`, `cd torii/`
-  * `yarn install`
-  * `npm test` for tests.
+  * `pnpm install`
+  * `pnpm ember test` for tests.
   * Or, to run tests in the browser:
-    * Start the server: `ember test --server`
+    * Start the server: `pnpm ember test --server`
 
 ## Running the torii examples locally
 
@@ -738,7 +738,7 @@ The `/etc/hosts` equivalent filepath on Windows is:
 For more info, see [Hosts at wikipedia](http://en.wikipedia.org/wiki/Hosts_(file)).
 
   * Clone the repo `git clone git@github.com:Vestorly/torii.git`, `cd torii/`
-  * `yarn` or `yarn install`
+  * `pnpm install`
   * `ember serve`
 
 Now, start your server and visit the page:
