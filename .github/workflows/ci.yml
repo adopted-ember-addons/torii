@@ -27,7 +27,7 @@ jobs:
           cache: pnpm
       - uses: pnpm/action-setup@v2
         with:
-          version: 9
+          version: 10
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
       - name: Lint
@@ -47,7 +47,7 @@ jobs:
           cache: pnpm
       - uses: pnpm/action-setup@v2
         with:
-          version: 9
+          version: 10
       - name: Install Dependencies
         run: pnpm install --no-lockfile
       - name: Run Tests
@@ -87,7 +87,7 @@ jobs:
           cache: pnpm
       - uses: pnpm/action-setup@v2
         with:
-          version: 9
+          version: 10
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
       - name: Run Tests
