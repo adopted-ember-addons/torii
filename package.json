@@ -44,8 +44,7 @@
     "start": "ember serve",
     "test": "npm-run-all --print-name \"lint\" \"test:*\"",
     "test:ember": "ember test",
-    "test:ember-compatibility": "ember try:each",
-    "release": "release-it"
+    "test:ember-compatibility": "ember try:each"
   },
   "resolutions": {
     "isbinaryfile": "5.0.0"
@@ -95,8 +94,6 @@
     "prettier": "^2.7.1",
     "qunit": "^2.19.2",
     "qunit-dom": "^2.0.0",
-    "release-it": "^14.2.1",
-    "release-it-lerna-changelog": "^3.1.0",
     "release-plan": "^0.16.0",
     "webpack": "^5.74.0"
   },
@@ -116,15 +113,5 @@
   "ember-addon": {
     "demoUrl": "http://adopted-ember-addons.github.io/torii/demo.html",
     "configPath": "tests/dummy/config"
-  },
-  "release-it": {
-    "plugins": {},
-    "git": {
-      "tagName": "v${version}"
-    },
-    "github": {
-      "release": true,
-      "tokenRef": "GITHUB_AUTH"
-    }
   }
 }
