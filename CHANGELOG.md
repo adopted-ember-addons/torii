@@ -1,3 +1,5 @@
+# Changelog
+
 # 1.0.0-beta.1
 
 1.0.0 focuses on getting torii to work on Ember 3.24, Ember 4.0 and up.

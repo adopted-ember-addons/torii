@@ -47,6 +47,9 @@
     "test:ember-compatibility": "ember try:each",
     "release": "release-it"
   },
+  "resolutions": {
+    "isbinaryfile": "5.0.0"
+  },
   "dependencies": {
     "@ember/string": "^4.0.1",
     "ember-auto-import": "^2.10.0",
@@ -94,18 +97,16 @@
     "qunit-dom": "^2.0.0",
     "release-it": "^14.2.1",
     "release-it-lerna-changelog": "^3.1.0",
+    "release-plan": "^0.16.0",
     "webpack": "^5.74.0"
-  },
-  "resolutions": {
-    "isbinaryfile": "5.0.0"
   },
   "peerDependencies": {
     "@babel/core": "^7.13.0"
   },
+  "packageManager": "pnpm@10.14.0",
   "engines": {
     "node": "20.* || 22.* || >= 24"
   },
-  "packageManager": "pnpm@10.14.0",
   "publishConfig": {
     "registry": "https://registry.npmjs.org"
   },
