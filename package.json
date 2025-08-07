@@ -104,7 +104,6 @@
   },
   "engines": {
     "node": "20.* || 22.* || >= 24",
-    "pnpm": ">= 10"
   },
   "packageManager": "pnpm@10.14.0",
   "publishConfig": {
