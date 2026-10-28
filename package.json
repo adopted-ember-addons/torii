@@ -1,6 +1,6 @@
 {
   "name": "torii",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A set of clean abstractions for authentication in Ember.js",
   "keywords": [
     "authentication",

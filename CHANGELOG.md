@@ -1,5 +1,16 @@
 # Changelog
 
+## Release (2026-10-28)
+
+* torii 1.0.1 (patch)
+
+#### :house: Internal
+* `torii`
+  * [#51](https://github.com/adopted-ember-addons/torii/pull/51) Replace Ember.isEmpty with isEmpty utility ([@MelSumner](https://github.com/MelSumner))
+
+#### Committers: 1
+- Melanie Sumner Temple ([@MelSumner](https://github.com/MelSumner))
+
 ## Release (2025-08-07)
 
 * torii 1.0.0 (major)
